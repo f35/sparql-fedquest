@@ -214,12 +214,12 @@ this.SearchView = Backbone.View.extend({
         var type = Session.get('s2');
         var base = Session.get('s3')
         /*
-         * 
-         * 
-         * 
-         * 
-         * 
-         $(".imgfav").click(function (){ 
+         *
+         *
+         *
+         *
+         *
+         $(".imgfav").click(function (){
          //$(".change").removeClass("selected");
          alert ("click");
          $(this).attr ("src","/images/starblue.png");
@@ -391,7 +391,7 @@ this.SearchView = Backbone.View.extend({
             //App.resultCollection2.remove({});
             //var EntitySearch = get_radio_value("resourceType");
 
-
+console.log('entrol');
             var EntitySearch = get_radio_value("opciones");
 
             var FromListaux = get_checkList_values("repositoriesList");
@@ -539,6 +539,7 @@ this.SearchView = Backbone.View.extend({
                             Query += '}\n';
                         }
                         Query += '}\n';
+                      //  console.log(Query);
                     }
                 }
                 var source = {};
@@ -598,7 +599,7 @@ function darclick(FromList) {
         for (var i = 0; i < en.length; i++) {
             var result = en[i];
             FromList.push({attributes: {"data-base": {"value": result.base}, "data-endpoint": {"value": result.endpoint}, "data-graphuri": {"value": result.graphURI}, "data-name": {"value": result.name}}});
-            //FromList.push({attributes: {"data-base": {"value": true}, "data-endpoint": {"value": result.endpoint}, "data-graphuri": {"value": result.graphURI}, "data-name": {"value": result.name}}});    
+            //FromList.push({attributes: {"data-base": {"value": true}, "data-endpoint": {"value": result.endpoint}, "data-graphuri": {"value": result.graphURI}, "data-name": {"value": result.name}}});
         }
         $('input.runSearch').click();
     });
@@ -1004,7 +1005,7 @@ downloadaction = function (e) {
     // alert (uri+"."+formatext);
     //  console.log (format+ uri);
     /*
-     $.get("file:///home/joe/EJemplo.html", function(response) { 
+     $.get("file:///home/joe/EJemplo.html", function(response) {
      alert(response) ;
      });*/
 

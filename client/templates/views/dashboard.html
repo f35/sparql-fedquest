@@ -29,7 +29,7 @@
               </form>
             </div>
           </div>
-          
+
         </div>
 
         {{> drawingboard}}
@@ -67,24 +67,24 @@
           </div>
           <!--
           <div class="col-xs-3">
-              
+
           </div>-->
-          
+
         </div>
       </div>
       <div class='notifications top-right' style="width: 250px;"></div>
       <div class='notifications top-left' style="width: 250px;"></div>
 
       <div style="display:none; "  id="contextMenu">
-        <ul border="0" cellpadding="0" cellspacing="0" 
-          style="border: 1px solid rgba(0, 0, 0, 0.2); border-radius: 6px; background-clip: padding-box; 
-          box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);  min-width: 160px; position: absolute; background-color: #ffffff;" 
+        <ul border="0" cellpadding="0" cellspacing="0"
+          style="border: 1px solid rgba(0, 0, 0, 0.2); border-radius: 6px; background-clip: padding-box;
+          box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);  min-width: 160px; position: absolute; background-color: #ffffff;"
           width="100px" >
           <li style="  clear: both; color: #333333; display: block; font-weight: normal; line-height: 20px;
                 padding: 3px; white-space: nowrap;">
             <div  id="changeResultSet" class="ContextItem" ><span class="glyphicon glyphicon-transfer"></span> ResultSet</div>
           </li>
-        </ul>     
+        </ul>
       </div>
 
   </div>
@@ -97,7 +97,7 @@
               <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
               <h4 class="modal-title" id="myModalLabel">{{lang "disp-endpoints"}}</h4>
             </div>
-            
+
               <div class="modal-body">
                 <table class="table table-striped ">
                   <thead>
@@ -122,13 +122,13 @@
                           <td><input type="radio" name="baseRadios" checked="{{base}}" data-endpoint="{{endpoint}}" data-graphuri="{{graphURI}}" class="base-endpoint" ></td>
                           <td><input type="checkbox" disabled="{{base}}"  checked="{{opt}}"  class="optional" data-endpoint="{{endpoint}}" data-graphuri="{{graphURI}}" > </td>
                           <td> <button type="button" class="btn btn-default" id="editEndpoint" onclick="editEndpoint(event)" data-endpoint-id="{{_id}}" ><span class="glyphicon glyphicon-edit"></span></button></td>
-                          <td> <button type="button" class="btn btn-default" id="deleteEndpoint" onclick="deleteEndpoint(event)" data-endpoint-id="{{_id}}" data-endpoint="{{endpoint}}" data-graphuri="{{graphURI}}"><span class="glyphicon glyphicon-remove"></span></button></td>      
+                          <td> <button type="button" class="btn btn-default" id="deleteEndpoint" onclick="deleteEndpoint(event)" data-endpoint-id="{{_id}}" data-endpoint="{{endpoint}}" data-graphuri="{{graphURI}}"><span class="glyphicon glyphicon-remove"></span></button></td>
                       </tr>
                     {{/each}}
                   </tbody>
                 </table>
               </div>
-            
+
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang "close"}}</button>
             </div>
@@ -144,7 +144,7 @@
               <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">{{ lang "close"}}</span></button>
               <h4 class="modal-title" id="myModalLabel"> {{ lang "New"}} Endpoint</h4>
             </div>
-            
+
               <div class="modal-body">
                 <form role="form" id="new-endpoint-form">
                   <div class="form-group">
@@ -171,19 +171,26 @@
                       <input type="color" id="new-endpoint-color" value="#ff0000" class="form-control" placeholder={{lang "graph-color"}} />
                     </div>
                   </div>
-                  <div class="form-group">
+									<div class="form-group">
+                    <label class="sr-only" for="new-endpoint-typeServer">Type server:</label>
+										<select class="form-control" name="file_type" id="new-endpoint-typeServer" placeholder={{ lang "Type Server"}}>
+     									<option value="Fuseki">Fuseki</option>
+     									<option value="Apache Marmotta">Apache Marmotta</option>
+										</select>
+                  </div>
+									<div class="form-group">
                     <label class="sr-only" for="new-endpoint-desc">{{ lang "Description"}}</label>
                     <textarea class="form-control" rows="3" id="new-endpoint-desc" placeholder={{ lang "Description"}}></textarea>
                   </div>
-                  <div class="radio">
+									<div class="radio">
                     <label>
                      <input type="checkbox" name="new-endpoint-base" id="new-endpoint-base" />
                       Base Endpoint
-                    </label> 
+                    </label>
                     <label>
                     <input type="checkbox" name="new-endpoint-optional" id="new-endpoint-optional" />
-                      {{ lang "Optional"}} 
-                    </label> 
+                      {{ lang "Optional"}}
+                    </label>
                     <!-- <label>
                     <input type="radio"  name="new-endpoint-base"  id="new-endpoint-base" >
                     Base Endpoint
@@ -217,7 +224,7 @@
               <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">{{ lang "close"}}</span></button>
               <h4 class="modal-title" id="myModalLabel">{{ lang "val-node"}}</h4>
             </div>
-           
+
               <div class="modal-body">
                  <label><input type="checkbox" id="wildcardoption" value= 0 onclick="checkwildcard();" > {{lang "wildcard"}} </label>
                   <div class="form-group">
@@ -235,7 +242,7 @@
                   </div>
                   <!-- <button class="btn btn-primary" data-dismiss="modal">Register</button> -->
               </div>
-            
+
             <div class="modal-footer">
               <!-- <div role="alert" class="alert alert-warning">Something happend</div> -->
              <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -253,7 +260,7 @@
               <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">{{ lang "Close"}}</span></button>
               <h4 class="modal-title" id="myModalLabel">{{ lang "raw-node-value"}}</h4>
             </div>
-            
+
             <div class="modal-body">
               <form role="form" id="rawnodeform">
 
@@ -288,7 +295,7 @@
               </form>
                 <!-- <button class="btn btn-primary" data-dismiss="modal">Register</button> -->
             </div>
-          
+
           <div class="modal-footer">
             <!-- <div role="alert" class="alert alert-warning">Something happend</div> -->
            <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -300,7 +307,7 @@
 
       <!-- Modal for sparql Editor -->
       <div class="modal fade" id="sparqlEditor" tabindex="-1" role="dialog" aria-labelledby="Node Value" aria-hidden="true">
-      
+
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
@@ -331,7 +338,7 @@
                   <button type="button" class="btn btn-primary btn-sm runQuery" id="sparqlbtnEditor">{{lang "run-query"}}</button>
                   <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">{{lang "close"}}</button>
               </div>
-          </div>  
+          </div>
         </div>
       </div>
 
@@ -364,11 +371,11 @@
               <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">{{lang "close"}}</span></button>
               <h4 class="modal-title" id="myModalLabel">{{lang "result-query"}}</h4>
             </div>
-            
+
               <div class="modal-body" style="overflow-x:scroll">
                 {{> reactiveTable collection=resultQuery settings=settings }}
               </div>
-            
+
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang "close"}}</button>
             </div>

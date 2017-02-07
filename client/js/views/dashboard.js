@@ -29,10 +29,11 @@ this.DashboardView = Backbone.View.extend({
         var base = $('#newEndpoint #new-endpoint-base')[0].checked;
         var loadschema = $('#newEndpoint #loadschema')[0].checked;
         var optional = $('#newEndpoint #new-endpoint-optional')[0].checked;
+        var typeServer = $('#newEndpoint #new-endpoint-typeServer').val();
         //COmentar
-        console.log('Registras' + id + endpoint + graphURI + description + optional);
+        console.log('Registras' + id + endpoint + graphURI + description + optional + typeServer);
         e.preventDefault();
-        Meteor.call('getEndpointStructure', id, endpoint, graphURI, description, colorId, base, loadschema, optional, function (error, result) {
+        Meteor.call('getEndpointStructure', id, endpoint, graphURI, description, colorId, base, loadschema, optional, typeServer, function (error, result) {
             if (error) {
                 $('#newEndpoint #loadingEndpoint img').hide();
                 $('.top-right').notify({
@@ -73,7 +74,7 @@ this.DashboardView = Backbone.View.extend({
         me = this;
         //jsonGraph =_.pluck(querie, 'jsonGraph');
         Session.set('graphQuery', id.idSample);
-        /*Session.set('querieTitle', _.pluck(querie, 'title')); 
+        /*Session.set('querieTitle', _.pluck(querie, 'title'));
          Session.set('querieDescription', _.pluck(querie, 'description')); */
         Session.set('endpointEdit', []);
         Tracker.autorun(function () {
@@ -300,7 +301,7 @@ this.DashboardView = Backbone.View.extend({
             };
 
             /**
-             *endpointProperties 
+             *endpointProperties
              *elementBelow source node
              *cellView node requesting the link
              */
@@ -481,7 +482,7 @@ this.DashboardView = Backbone.View.extend({
              * endpoint Endpoint the parser is evaluating
              * queryNodes: Nodes involved in the query
              * linkNodes Links involved in the query
-             * childsId Child nodes ids for the entity currently evaluated 
+             * childsId Child nodes ids for the entity currently evaluated
              * fields Current endpoint array of fields
              */
             this.parseQueryFields = function (endpoint, queryNodes, linkNodes, childsId, fields) {
@@ -658,7 +659,7 @@ this.DashboardView = Backbone.View.extend({
                     for (var i = 1; i < queryList.length; i++) {
                         var queryEndpoint = queryList[i];
                         console.log("COnsulta Endpoint " + queryEndpoint.endpoint.substring(1, queryEndpoint.endpoint.length - 1) + " - " + queryEndpoint.from.replace('<', ''));
-                        // Meteor.call ('findoptional',queryEndpoint.endpoint.substring(1,queryEndpoint.endpoint.length-1) , queryEndpoint.from.substring(1,queryEndpoint.from.length-1), function (error, result) { 
+                        // Meteor.call ('findoptional',queryEndpoint.endpoint.substring(1,queryEndpoint.endpoint.length-1) , queryEndpoint.from.substring(1,queryEndpoint.from.length-1), function (error, result) {
 
                         //  var query = Queries.findOne({_id: queryId});
                         var resultendpoint = Endpoints.findOne({endpoint: queryEndpoint.endpoint.substring(1, queryEndpoint.endpoint.length - 1), graphURI: queryEndpoint.from.substring(1, queryEndpoint.from.length - 1)});
@@ -986,7 +987,7 @@ this.DashboardView = Backbone.View.extend({
          console.log('base changed');
          //non-implemented
          });
-         });  
+         });
          });*/
 
         divNode.find('#availableEndpoint').on('hide.bs.modal', function (e) {
@@ -1321,10 +1322,10 @@ this.DashboardView = Backbone.View.extend({
                     checkbox2.checked = regex == 2;
                     checkbox3.checked = regex == 3;
                     //JO
-                    //document.getElementById("checkRegex").checked = 'checked';            
+                    //document.getElementById("checkRegex").checked = 'checked';
                 });
                 $('div #nodeValue').on('hide.bs.modal', function (ev) {
-                    //en el SAVE 
+                    //en el SAVE
                     var checkbox = document.getElementById("checkRegex");
                     var checkbox2 = document.getElementById("checkRegex2");
                     var checkbox3 = document.getElementById("checkRegex3");
@@ -1339,7 +1340,7 @@ this.DashboardView = Backbone.View.extend({
                         cellView.model.attr('text/regex', 3);
                     }
 
-                    //SAVE   
+                    //SAVE
                     if ($('div #nodeValue #node-value').val().length > 0) {
                         cellView.model.attr('text/text', $('div #nodeValue #node-value').val());
                         $('div #nodeValue').unbind('hide.bs.modal');
@@ -1537,10 +1538,10 @@ this.DashboardView = Backbone.View.extend({
                 }
             });
 
-        }; 
+        };
 
         checkwildcard = function (ev){
-          
+
 
            if ( $("#wildcardoption").is(':checked') ){
                $("#node-value").val("'wildcard'");
@@ -1549,7 +1550,7 @@ this.DashboardView = Backbone.View.extend({
                 $("#node-value").removeAttr("disabled");
                 $("#node-value").val("");
            }
-          
+
 
 
         };

@@ -3,9 +3,10 @@ import {
 }
 from
 'meteor/meteor';
+var _jquery = require('meteor/jquery');                                                                             // 6
 if (Meteor.isServer) {
-    
-    
+
+
     var Api = new Restivus({
         useDefaultAuth: true,
         prettyJson: true
@@ -36,7 +37,7 @@ levelAcademic : {
 areasInterest :{
     type:[Number] ,
     label: "InteresArea" ,
-} , 
+} ,
  language:{
     type:String ,
     label: "Language" ,
@@ -49,7 +50,7 @@ areasInterest :{
  secMail : {
     type:  String,
    // RegEx: Email
-} 
+}
   , accessLevel:{
     type:Number ,
     label:"Nivel de Acceso"
@@ -57,12 +58,12 @@ areasInterest :{
   }
  });
 
-UpdateProfileSchema =  new SimpleSchema({ 
+UpdateProfileSchema =  new SimpleSchema({
 accessLevel:{
     type:Number ,
     label:"Nivel de Acceso",
     max:2 ,
-    min:0 
+    min:0
 } ,  idProfile: {
     type: String,
     label: "idProfile"
@@ -77,10 +78,10 @@ accessLevel:{
 AccountsTemplates.configure({
     SignUpHook: function () {
       console.log ("Creado") ; }
-    
+
 });*/
 
-Hooks.onCreateUser = function (userId) { 
+Hooks.onCreateUser = function (userId) {
  //alert ("Login");
  var usr = Meteor.users.findOne({'_id':userId});
 
@@ -90,7 +91,7 @@ Hooks.onCreateUser = function (userId) {
  console.log (usr.emails[0].address);
 
 
- }; 
+ };
 
 Accounts.emailTemplates.resetPassword = {
     from (user){
@@ -99,9 +100,9 @@ Accounts.emailTemplates.resetPassword = {
   subject(user) {
     //console.log (user);
     if (user.profile.lang ==  "en"){
-    return "You request change the password on Fedquest search account"; 
+    return "You request change the password on Fedquest search account";
     } else {
-    return " Tu has realizado una petición de cambio de contraseña sobre una cuenta del buscador Fedquest";   
+    return " Tu has realizado una petición de cambio de contraseña sobre una cuenta del buscador Fedquest";
     }
   },
   text(user, url) {
@@ -394,7 +395,7 @@ function Prio(idc, cons, ord, pon, idi, e, f, t, lsi) {
         if (k.length == 0) {
             return k;
         }
-        
+
         var cach=true;
 
         var rob = {};
@@ -460,7 +461,7 @@ function Prio(idc, cons, ord, pon, idi, e, f, t, lsi) {
         if(cach){
             Cache.insert({keyk: key.hashCode(), result: k, ttl_date: new Date()});
         }
-        
+
         TickTock(true);
     } else {
         k = kwq[0].result;
@@ -477,8 +478,8 @@ function Prio(idc, cons, ord, pon, idi, e, f, t, lsi) {
 var num_auto=0;
 
     Meteor.startup(function () {
-        
-        
+
+
             SyncedCron.add({
       name: 'UpdateStats',
       schedule: function(parser) {
@@ -539,11 +540,11 @@ var num_auto=0;
                             "FoS_16": "Ciencias políticas",
                             "FoS_17": "Psicología",
                             "FoS_18": "Sociología"};
-          
-          
-          
+
+
+
           for (;;){
-              
+
               var lsareintP=[];
               var lsnn = [];
                             for (var ik = 0; ik < 19; ik++) {
@@ -559,14 +560,14 @@ var num_auto=0;
                                 });
                             }
                             lsareintP = lsnn;
-              
+
               var OnePri = Cache.findOne({keyp: {$exists: true}});
               if (OnePri){
                   var ky = OnePri.keyp;
                   var resu= Cache.find({key:ky}).fetch();
                   var r_Sub ={};
                   for (var i=0; i<resu.length; i++){
-                      
+
                       var v = resu[i].uri;
                       var sub__=resu[i].sub;
                       //console.log(sub__);
@@ -596,15 +597,15 @@ var num_auto=0;
                   Meteor._sleepForMs(1000);
               }
           }
-          
-                
-          
-          
+
+
+
+
       }
     });
     */
-    
-    
+
+
     SyncedCron.add({
       name: 'UpdateSugg',
       schedule: function(parser) {
@@ -666,7 +667,7 @@ var num_auto=0;
             var _spar = spar.replace(new RegExp("---", "g"), proper[prope_i]);
             var objQuery={sparql: _spar, ep: endpoint.endpoint, gr: endpoint.graphURI};
             var result = Meteor.call('doQueryCacheStats', objQuery);
-            
+
             if (result == null || result == undefined || result.resultSet == null || result.resultSet== undefined || result.resultSet.value == null || result.resultSet.value== undefined )
             {
                 console.log('Error Sugg_ '+JSON.stringify(objQuery));
@@ -712,7 +713,7 @@ var num_auto=0;
     });
 
 
-        
+
     //   process.env.MAIL_URL = 'smtp://postmaster@sandboxee5ed2bda25d49ec855b09c230fdbf1f.mailgun.org:c2489aa5122a827541a4a412eea7ee83@smtp.mailgun.org:587';
      //  process.env.MAIL_URL = 'smtp://postmaster@mg.fedquest.cedia.org.ec:6a3bb4be5642a51f37c6234b7626bd9e@smtp.mailgun.org:587';
 
@@ -725,40 +726,40 @@ var num_auto=0;
 
 
         Properties._ensureIndex({'endpoint': 1, 'graphURI': 1});
-        
+
         Cache._ensureIndex({'key': 1, 'original':-1});
         Cache._ensureIndex({'key': 1, 'firstResult':-1, 'faceted.key':1, 'faceted.value':1});
         Cache._ensureIndex({'key': 1, 'faceted.key':1, 'faceted.value':1});
         Cache._ensureIndex({'key': 1} );
         Cache._ensureIndex({'keyl': 1});
-        
+
         Cache._ensureIndex({'key': 1, 'nresult':1});
         Cache._ensureIndex({'ttl_date': 1}, {'expireAfterSeconds':1209600});
         Cache._ensureIndex({'queue': 1,'qord':-1});
         Cache._ensureIndex({'queue': 1});
-        
+
         // code to run on server at startup
         //Meteor.call('getEndpointStructure', 'http://190.15.141.102:8890/sparql', 'http://dspace.ucuenca.edu.ec/resource/');
         //Meteor.call('pingServer', 'http://190.15.141.102:8890/sparql');
 
         var SparqlParser = Meteor.npmRequire('sparqljs').Parser;
         var parserInstance = new SparqlParser();
-        
-        
+
+
 Api.addRoute('sparql', {authRequired: false}, {
     post:function (){
-    
-    
+
+
         var Body=this.request.body.query;
         var Headers=this.request.headers;
-        
+
         //console.log(Body);
         //console.log(Headers);
         var endpointBase = Endpoints.findOne({base: true}).endpoint;
         var j = Body.trim().hashCode();
         var k = Cache.findOne({key: j});
         var l = {};
-        
+
         if (!k){
             console.log('Consulta');
             var w = HTTP.post(endpointBase, {params: {query: Body}, headers: {'Accept': 'application/sparql-results+xml','content-type': 'application/x-www-form-urlencoded'}});
@@ -771,13 +772,13 @@ Api.addRoute('sparql', {authRequired: false}, {
             this.response.setHeader("Access-Control-Allow-Origin", "*");
             this.response.setHeader("Content-Type", "application/sparql-results+xml");
             this.response.setHeader("Transfer-Encoding", "chunked");
-            
+
             this.response.write(l+'');
             this.done();
-        
-        
 
-     //return "Esto es un string";   
+
+
+     //return "Esto es un string";
     }
 });
 
@@ -794,7 +795,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                 var sparql_p = "select (count(*) AS ?P) ('__' AS ?EP) {?x a <http://xmlns.com/foaf/0.1/Person>}";
                 var sparql_d = "select (count(*) AS ?D) ('__' AS ?EP) {?x a <http://purl.org/ontology/bibo/Document>}";
                 var sparql_c = "select (count(*) AS ?C) ('__' AS ?EP) {?x a <http://purl.org/ontology/bibo/Collection>}";
-                //Consulta  
+                //Consulta
                 var sparql_ = 'select * {\n';
                 for (var i = 0; i < endp.length; i++) {
                     var endpoint = endp[i];
@@ -812,7 +813,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                     }
                 }
                 sparql_ += '}';
-                //Preprocesamiento  
+                //Preprocesamiento
                 var r = Meteor.call('doQueryCacheStats', {sparql: sparql_}).resultSet.value;
                 var Obj = JSON.parse(r).results.bindings;
                 var Stats1 = [];
@@ -1024,7 +1025,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                         }else{
                             response.resultSet=k.data;
                         }
-                        
+
                     } catch (e) {
                         console.log(e);
                         response.statusCode = 400;
@@ -1053,7 +1054,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                         } else {
                             console.log('==Avoiding SPARQL validation on client');
                         }
-                        response.resultSet = Meteor.call('runQuery', endpointBase.endpoint, endpointBase.graphURI, jsonRequest.sparql, undefined, timeout);
+                        response.resultSet = Meteor.call('runQuery', endpointBase.endpoint, endpointBase.graphURI, jsonRequest.sparql, undefined, timeout,endpointBase.typeServer);
                     } catch (e) {
                         console.log(e);
                         response.statusCode = 400;
@@ -1406,9 +1407,9 @@ Api.addRoute('sparql', {authRequired: false}, {
                                 var un = false;
                                 //if (m.results.bindings[t]["" + d] == undefined){
                                    // console.log(m.results.bindings[t]);
-                                    
+
                                 //}
-                                
+
                                 var v = m.results.bindings[t]["" + d].value;
                                 if (r["" + v] != undefined) {
                                 } else {
@@ -1428,11 +1429,11 @@ Api.addRoute('sparql', {authRequired: false}, {
                                // if (m.results.bindings[t].Score != undefined) {
                                 //    fScore = Number(m.results.bindings[t].Score.value);
                               //  }
-                                
+
                                // if (m.results.bindings[t].Sub != undefined && m.results.bindings[t].Sub != null) {
                               //      fSub=m.results.bindings[t].Sub.value;
                               //  }
-                                   
+
 
                                 // if (r_Type["" + v]!= undefined){
                                 //   fType=r_Type["" + v];
@@ -1518,7 +1519,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                             if (bulk.length>0){
                                 Cache.batchInsert(bulk);
                             }
-                            
+
                             //TickTock(true);
                             //Limipiar
                             r = {};
@@ -1763,11 +1764,16 @@ Api.addRoute('sparql', {authRequired: false}, {
                     }
                 });
             },
-            runQuery: function (endpointURI, defaultGraph, query, format, timeout) {
+            runQuery: function (endpointURI, defaultGraph, query, format, timeout, typeServer) {
                 format = _.isUndefined(format) ? 'application/sparql-results+json' : format;
                 timeout = _.isUndefined(timeout) ? '0' : timeout;
                 //return HTTP.get(endpointURI,
-                return HTTP.post(endpointURI,
+                var result;
+                console.log('marmotta'+ typeServer);
+
+                switch(typeServer) {
+                  case "Fuseki":
+                      result= HTTP.post(endpointURI,
                         {
                             'params':
                                     {
@@ -1777,13 +1783,80 @@ Api.addRoute('sparql', {authRequired: false}, {
                                         'timeout': timeout
                                     }
                         });
+                        break;
+                case "Apache Marmotta":
+                  var options = {
+                         params: {
+                            "query": query,
+                            "output": "json"
+                         },
+                         headers: {
+                             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                             "accept": "application/json"
+                         }
+                  };
+                  result=Meteor.http.post(endpointURI, options);
+
+
+                    break;
+               default:
+               try{
+                 result= HTTP.post(endpointURI,
+                   {
+                       'params':
+                               {
+                                   'default-graph-uri': defaultGraph,
+                                   'query': query,
+                                   'format': format,
+                                   'timeout': timeout
+                               }
+                   });
+                 }catch(e)
+                 {
+                    try{
+
+                      var options = {
+                             params: {
+                                "query": query,
+                                "output": "json"
+                             },
+                             headers: {
+                                 "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                                 "accept": "application/json"
+                             }
+                      };
+                      result=Meteor.http.post(endpointURI, options);
+                    }
+                    catch(ee){
+
+                    }
+
+                   console.log(result);
+                 }
+
+
+
+
+
+
+
+
+                   break;
+                }
+
+                return result;
             },
-            runQueryDescr: function (endpointURI, defaultGraph, query, format, timeout) {
+            runQueryDescr: function (endpointURI, defaultGraph, query, format, timeout, typeServer) {
                 format = _.isUndefined(format) ? 'application/rdf+json' : format;
                 timeout = _.isUndefined(timeout) ? '0' : timeout;
-                console.log('Consulta' + endpointURI + '+' + query + '+' + format);
+                console.log('Consulta' + endpointURI + '+' + query + '+' + format+' '+typeServer);
                 // return HTTP.get(endpointURI,
-                return HTTP.post(endpointURI,
+                var result;
+                switch(typeServer) {
+                  case "Fuseki":
+                  console.log('entro en fuseki');
+
+                      result= HTTP.post(endpointURI,
                         {
                             'params':
                                     {
@@ -1793,11 +1866,65 @@ Api.addRoute('sparql', {authRequired: false}, {
                                         'timeout': timeout
                                     }
                         });
+                        break;
+                case "Apache Marmotta":
+                  console.log('entro en apache');
+                      var options = {
+                             params: {
+                                "query": query,
+                                "output": "json"
+                             },
+                             headers: {
+                                 "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                                 "accept": "application/json"
+                             }
+                      };
+
+
+                      result=Meteor.http.post(endpointURI, options);
+
+                      console.log("result:"+result.content);
+                      break;
+
+               default:
+                console.log('entro en default');
+                 result= HTTP.post(endpointURI,
+                   {
+                       'params':
+                               {
+                                   'default-graph-uri': defaultGraph,
+                                   'query': query,
+                                   'format': format,
+                                   'timeout': timeout
+                               }
+                   });
+
+                   if(!result){
+                     var options = {
+                            params: {
+                               "query": query,
+                               "output": "json"
+                            },
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                                "accept": "application/json"
+                            }
+                     };
+
+
+                     result=Meteor.http.post(endpointURI, options);
+
+                   }
+                   break;
+                }
+                return result;
             },
-            pingServer: function (endpointURI, defaultGraph) {
+            pingServer: function (endpointURI, defaultGraph, typeServer) {
                 var response = {};
                 try {
-                    var result = Meteor.call('runQuery', endpointURI, '', 'ask {graph <' + defaultGraph + '> {?s ?p ?o}}', undefined, 10000);
+                    var result = Meteor.call('runQuery', endpointURI, '', 'ask {graph <' + defaultGraph + '> {?s ?p ?o}}', undefined, 10000,typeServer);
+                    console.log("PingServer: "+result);
+
                     var content = EJSON.parse(result.content);
                     response.statusCode = result.statusCode;
                     if (result.statusCode != 200) {
@@ -1932,30 +2059,34 @@ Api.addRoute('sparql', {authRequired: false}, {
                 response.property = URIMap.substring(idx + 1);
                 return response;
             },
-            fetchGraphSchema: function (endpointURI, defaultGraph) {
+            fetchGraphSchema: function (endpointURI, defaultGraph,typeServer) {
                 var muestra;
-                console.log('Entra1 ');
+
                 console.log('==Obtaining graph description of <' + defaultGraph + '> from ' + endpointURI + '==');
                 var result = Meteor.call('runQuery', endpointURI, defaultGraph,
                         'select distinct ?o where{ ?s a ?o . '
                         + 'BIND(STR(?s) AS ?strVal) '
                         + 'FILTER(STRLEN(?strVal) >= ' + defaultGraph.length + ' && SUBSTR(?strVal, 1, ' + defaultGraph.length + ' ) = "'
-                        + defaultGraph + '")}'
+                        + defaultGraph + '")}', undefined,undefined,typeServer
                         );
                 var rsEntities = EJSON.parse(result.content);
+
                 var dataset = [];
                 var datasetRDF = {};
                 _.each(rsEntities.results.bindings, function (el, idx, list) {
                     var subject = el.o.value;
                     console.log('=>Obtaining subject properties of: ' + subject);
                     var rsMuestra = Meteor.call('runQuery', endpointURI, defaultGraph,
-                            'select distinct ?s where{ ?s a <' + subject + '>} limit 10');
+                            'select distinct ?s where{ ?s a <' + subject + '>} limit 10', undefined,undefined,typeServer);
+
                     var rsMuestra = EJSON.parse(rsMuestra.content);
+
+
                     var predicateArray = {};
                     _.each(rsMuestra.results.bindings, function (el, idx, list) {
                         var entity = el.s.value;
                         console.log('==>Graph Entity sample: ' + entity);
-                        var rsPredicate = Meteor.call('runQueryDescr', endpointURI, defaultGraph, 'describe <' + entity + '>');
+                        var rsPredicate = Meteor.call('runQueryDescr', endpointURI, defaultGraph, 'describe <' + entity + '>',undefined,undefined, typeServer);
                         //Cambios
                         rsPredicate = EJSON.parse(rsPredicate.content);
                         _.each(rsPredicate, function (el, idx, list) {
@@ -2009,7 +2140,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                                     //just process entity own properties
                                     //console.log('Predicate:' + el);
                                     //	var sujetos = list ;
-                                    //		_.each(sujetos, function(el, idx, list) { 
+                                    //		_.each(sujetos, function(el, idx, list) {
                                     //			console.log ('valor'+idx+el+el.valor+list[0]);
                                     //		});
 
@@ -2034,7 +2165,7 @@ Api.addRoute('sparql', {authRequired: false}, {
 
                                             console.log('==>Looking entity type for object <' + o.value + '>');
                                             var rsObjSubject = Meteor.call('runQuery', endpointURI, defaultGraph,
-                                                    'select ?o where { <' + o.value + '> a ?o }');
+                                                    'select ?o where { <' + o.value + '> a ?o }',undefined,undefined,typeServer);
                                             rsObjSubject = EJSON.parse(rsObjSubject.content);
                                             objectObj.objectEntity.fullName = null;
                                             objectObj.objectEntity.prefix = null;
@@ -2056,7 +2187,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                                     //muestra = {subjectObj: subject, predicate: predicateObj, objectP: objectObj};
                                     //console.log('===>Subject: ' + subject + '| Predicate:' + el.p.value + '| Object:' + object + '| Type:' + type + '| Datatype:' + datatype);
                                     /*
-                                     console.log('===>Subject: ' + subject + '| Predicate:' + predicateObj.fullName 
+                                     console.log('===>Subject: ' + subject + '| Predicate:' + predicateObj.fullName
                                      + '| Object:' + (objectObj.objectEntity||objectObj.dataType) + '| SampleValue:' + objectObj.sampleValue);
                                      */
 
@@ -2123,7 +2254,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                     /*
                      var arrays = {};
                      c = _.groupBy(dataset, function(obj){return obj.predicate.fullName;});
-                     var counter = 0; 
+                     var counter = 0;
                      for(property in c) {
                      d = c[property];
                      e = _.uniq(d, false, function(obj){return obj.subject.fullName + '-' + obj.objectType.objectEntity.fullName;});
@@ -2211,7 +2342,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                             //muestra = {subjectObj: subject, predicate: predicateObj, objectP: objectObj};
                             //console.log('===>Subject: ' + subject + '| Predicate:' + el.p.value + '| Object:' + object + '| Type:' + type + '| Datatype:' + datatype);
                             /*
-                             console.log('===>Subject: ' + subject + '| Predicate:' + predicateObj.fullName 
+                             console.log('===>Subject: ' + subject + '| Predicate:' + predicateObj.fullName
                              + '| Object:' + (objectObj.objectEntity||objectObj.dataType) + '| SampleValue:' + objectObj.sampleValue);
                              */
 
@@ -2256,7 +2387,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                     /*
                      var arrays = {};
                      c = _.groupBy(dataset, function(obj){return obj.predicate.fullName;});
-                     var counter = 0; 
+                     var counter = 0;
                      for(property in c) {
                      d = c[property];
                      e = _.uniq(d, false, function(obj){return obj.subject.fullName + '-' + obj.objectType.objectEntity.fullName;});
@@ -2276,9 +2407,14 @@ Api.addRoute('sparql', {authRequired: false}, {
                      */
                 });
             },
-            getEndpointStructure: function (graphName, endpointURI, defaultGraph, graphDescription, colorId, baseEndpoint, updateGraph, optional) {
+            getEndpointStructure: function (graphName, endpointURI, defaultGraph, graphDescription, colorId, baseEndpoint, updateGraph, optional, typeServer) {
+
+                String.prototype.trim = function() { return this.replace(/^\s+|\s+$/g, ""); };
+
+                defaultGraph=defaultGraph.trim();
                 var endpoint = Endpoints.findOne({endpoint: endpointURI, graphURI: defaultGraph});
-                var response = Meteor.call('pingServer', endpointURI, defaultGraph);
+
+                var response = Meteor.call('pingServer', endpointURI, defaultGraph, typeServer);
                 if (response.statusCode != 200 || response.msg.length > 0)
                     return response;
                 var statusCode = response.msg.length == 0 ? 'A' : 'I';
@@ -2288,7 +2424,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                 if (_.isUndefined(endpoint)) {
                     console.log('==Inserting new endpoint');
                     var color_id = colorId ? colorId : '#' + Math.floor(Math.random() * 16777215).toString(16);
-                    Endpoints.insert({name: graphName, colorid: color_id, endpoint: endpointURI, graphURI: defaultGraph, description: graphDescription, base: baseEndpoint, status: statusCode, lastMsg: response.msg, opt: optional});
+                    Endpoints.insert({name: graphName, colorid: color_id, endpoint: endpointURI, graphURI: defaultGraph, description: graphDescription, base: baseEndpoint, status: statusCode, lastMsg: response.msg, opt: optional, type: typeServer});
                     //updateGraph = true;
                 } else {
                     console.log('==Updating endpoint ' + endpointURI + '<' + defaultGraph + '>');
@@ -2296,7 +2432,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                 }
                 if (updateGraph) {
                     Properties.remove({endpoint: endpointURI, graphURI: defaultGraph});
-                    Meteor.call('fetchGraphSchema', endpointURI, defaultGraph, function (error, result) {
+                    Meteor.call('fetchGraphSchema', endpointURI, defaultGraph, typeServer, function (error, result) {
                         if (error) {
                             console.log("Error ==>" + error);
                             response.statusCode = 500;
@@ -2308,7 +2444,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                 } else {
                     console.log("Skipping Graph Schema fetching process for endpoint: " + endpointURI + ' <' + defaultGraph + '>');
                 }
-                Meteor.call('updateStats');
+              //  Meteor.call('updateStats');
                 return response;
             },
             updateBaseEndpoint: function (endpointURI, defaultGraph) {
@@ -2349,7 +2485,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                 // console.log("Resp" + endpoint.opt);
                 return endpoint;
             }
-            , 
+            ,
             findProfile: function (id) {
         // console.log(endpointURI + defaultGraph);
                 var profile = Profile.findOne({idProfile: id});
@@ -2413,7 +2549,7 @@ Api.addRoute('sparql', {authRequired: false}, {
 
                     var usuario = Meteor.users.findOne({'_id': usercode});
                     var profile = Profile.findOne({'idProfile': usercode});
-                    //  console.log ("Profile");  
+                    //  console.log ("Profile");
                     //  console.log (profile);
                     //   console.log (usuario);                    {$set:{"profile": {lang: usuario.profile.lang } , "accessLevel": {"access":val}}});
                     //   Meteor.users.update ({'_id' : usercode}, {$set: { "profile" :[  { lang: usuario.profile.lang } , { access: val } ]   }});
@@ -2472,12 +2608,12 @@ Api.addRoute('sparql', {authRequired: false}, {
                 return "Eliminado";
             },saveinterest: function  (URI) {
                  var interest = InterestResources.findOne({ 'idUser': this.userId , 'URI' : URI });
-                   
+
                    if (  _.isUndefined(interest)){
-                 
+
                  InterestResources.insert({idUser: this.userId , 'URI' : URI });
                  return "almacenado";
-                 }  
+                 }
 
                  return "Ya estaba almacenado";
 
@@ -2485,19 +2621,19 @@ Api.addRoute('sparql', {authRequired: false}, {
 
               RecomendationItems: function  () {
                  var reco = Recomendation.find({ 'userid': this.userId }).fetch();
-                   
+
                    if ( !_.isUndefined(reco)){
                  //console.log (reco);
                 // InterestResources.insert({idUser: this.userId , 'URI' : URI });
                  return reco;
-                 }  
+                 }
 
                  return "Error";
 
               }
-              
- 
- 
+
+
+
         });
 
         //Update Prefixes schema on every server startup
@@ -2506,4 +2642,3 @@ Api.addRoute('sparql', {authRequired: false}, {
 
     });
 }
-
