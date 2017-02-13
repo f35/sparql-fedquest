@@ -1,8 +1,8 @@
 
 			<template name="search">
 
-		<div class="search-section container-fluid" style="overflow: scroll"> 
-	    <div class="first-search"> 
+		<div class="search-section container-fluid" style="overflow: scroll">
+	    <div class="first-search">
 	    <div class="firstsection">
 		<div class="title-seach text-center">
 		<p class="recurso"> {{lang "resources-search"}} </p>
@@ -10,16 +10,16 @@
 		<div class="search-area text-center">
 	    <div class="row">
 		<div class="col-md-10">
-		<div class="Search-bar input-group"> 
+		<div class="Search-bar input-group">
 		  <input type="text" value="" name="terms" onclick="Session.set('auxAct',Session.get('auxAct')+1);" onkeydown="Session.set('auxAct',Session.get('auxAct')+1); if(event.keyCode == 13){$('.runSearch').click();}" class="required form-control textToSearch" id="mce-text" placeholder={{lang "placeholder-search"}} required>
                           <span class="input-group-btn">
-                            <input type="button" value={{lang "search"}} name="subscribe" id="mc-embedded-subscribe" class="btn btn-default runSearch" >                   
+                            <input type="button" value={{lang "search"}} name="subscribe" id="mc-embedded-subscribe" class="btn btn-default runSearch" >
 						 </span>
 		</div>
 		</div>
 		<form class="result-options">
-		   <div class=col-md-2> 
-			  <div class="cc-selector"> 
+		   <div class=col-md-2>
+			  <div class="cc-selector">
 			  <input id="documentos2" type="radio" name="opciones" value="documentos" />
 			  <label class="opciones-cc documentos" for="documentos2" data-toggle="tooltip" title={{lang "tip-document"}}></label>
               <input id="autores2" type="radio" name="opciones" value="autores" />
@@ -32,7 +32,7 @@
 			</form >
 		</div>
 		</div>
-		
+
 		<div class="title-seach row">
 		<div class="col-md-6">
 		<a href="#" class="avanzado" onclick="hide (event);"> {{lang "advance-search"}} </a>
@@ -41,36 +41,36 @@
 		<p> {{NresultFullQuery}}</p>
 		</div>
         </div>
-     
-		<div class="oculto" > 
+
+		<div class="oculto" >
 		 <div class="input-group">
 <div style="float: left;"><input type="checkbox" class="optional" id="AllRepo" name="repositoriesListAll"   ><i>All</i>&nbsp;&nbsp;</div>
 									{{#each endpointsAvailable}}
-									
-									<div style="float: left;"><input type="checkbox" data-base="{{base}}" checked="true"  class="optional" data-endpoint="{{endpoint}}" data-graphuri="{{graphURI}}" data-name="{{name}}"  name="repositoriesList" >{{name}}&nbsp;&nbsp;</div>
+
+									<div style="float: left;"><input type="checkbox" data-base="{{base}}" checked="true"  class="optional" data-endpoint="{{endpoint}}" data-graphuri="{{graphURI}}" data-name="{{name}}" data-typeserver={{typeServer}} name="repositoriesList" >{{name}}&nbsp;&nbsp;</div>
 
 									{{/each}}
 
 								</div>
-		</div> 
-	  
+		</div>
+
 		</div>
 		</div>
 
 		<div class="second-area">
 	    <div class="row">
-			<div class="sugestion-area col-md-3"> 
-                            
+			<div class="sugestion-area col-md-3">
+
                                 <div class="sugestion-panel" id = "pfac">
 					<span id="Title-suggestion" > <b>{{lang "fac"}} </b>  </span>
 					<span class = "{{DespFac}}" id= "expandfac"  onclick = "desplegar2 (this)"  > </span>
 					<div class="result-suggestion collapse" id = "fac" style="padding: 5px;">
                                             {{#if BresultFullQuery}}
-                                                
+
                                                 {{#each facetedOptions}}
                                                     <h4>{{Title}}</h4>
                                                     {{#if Range}}
-                                                    
+
                                                         {{#if Exists}}
                                                         <div id="slider-range" data-inf="{{Values2}}" data-min="{{Min}}" data-max="{{Max}}"></div>
                                                             <p>
@@ -80,10 +80,10 @@
                                                               <script>
                                                                   $(function(){
                                                                       facetedRange();
-                                                                      
-                                                                      
+
+
                                                                   });
-                                                                  
+
                                                                   </script>
 
                                                                         {{else}}
@@ -94,8 +94,8 @@
                                                         <div class="input-group" >
                                                         {{#each Values}}
                                                             <div style="float: left;"><input type="checkbox" data-count="{{count}}" data-key="{{key}}" checked="true"  class="optional" name="fcls_{{Title}}"> ({{count}}) {{key2}}&nbsp;&nbsp;</div>
-                                                    
-                                                    
+
+
                                                         {{/each}}
                                                         </div>
                                                     {{else}}
@@ -105,11 +105,11 @@
                                                 {{/each}}
                                                 <p>
                                                  <span class="input-group-btn">
-                                                    <input type="button" value={{lang "run-query"}} name="subscribe" id="mc-embedded-subscribe" class="btn btn-default runSearchFaceted" >                   
+                                                    <input type="button" value={{lang "run-query"}} name="subscribe" id="mc-embedded-subscribe" class="btn btn-default runSearchFaceted" >
                                                 </span>
                                                 </p>
                                                 <script>
-                                                    
+
                                                     function get_checkList_values3(CheckName) {
                                                     var inputs = document.getElementsByName(CheckName);
                                                     var values = [];
@@ -124,9 +124,9 @@
                                                     }
                                                     return values;
                                                 }
-                                                    
+
                                                                         $( function() {
-                                                                     
+
                                                         $('input.runSearchFaceted').on('click', function (ev) {
 
                                                             //alert('d');
@@ -153,19 +153,19 @@
 
                                                         });
                                                } );
-                                                                        </script> 
-                                                
+                                                                        </script>
+
                                             {{else}}
                                                 {{lang "noData"}}
                                             {{/if}}
 					</div>
 				</div>
-                            
+
 				<div class="sugestion-panel" id = "psug">
 					<span id="Title-suggestion" > <b>{{lang "sug"}} </b>  </span>
 					<span class = "{{DespSug}}" id= "expandsugg"  onclick = "desplegar (this)"  > </span>
 					<div class="result-suggestion collapse" id = "sug">
-						
+
 					<UL type = "disk" id="Sugerencias">
         			<!--<li> Buscar por autores con nombre "DIEGO" </li> onclick = "desplegar (this)" data-toggle="collapse" data-target="#sug"
         			<li> Buscar colecciones que contenga obras cuyo autor se llame "Diego" </li>
@@ -183,20 +183,20 @@
 	    	 <!-- 	<div class="text-center  nresult col-md-9">
 						<p>{{NresultFullQuery}}</p>
 					</div>
-                	   
-             
+
+
 			<div class="result col-md-9">
-			<div class="fuente-area col-md-14 text-center"> 
+			<div class="fuente-area col-md-14 text-center">
 			<span class="glyphicon glyphicon-file"></span>
 			UCUENCA
 			</div>
-		<div class="result-text col-md-14">	
+		<div class="result-text col-md-14">
 		<span class="Title-result"> <u> Framework para soportar la Metodologia de Linked Open Data   </u> </span>
 		<p > <b> Abstract : </b> La generación de datos enlazados (LOD) actualmente se ha vuelto una actividad cada vez más común. Sin
 embargo, al tratarse de una tendencia relativamente nueva, el desarrollo de herramientas tanto teóricas,
 metodológicas como tecnológicas ha sido reducido. La mayoría de soluciones que busca brindar soporte para
 el proceso en la publicación de LOD. </p>
-		
+
 		<div class="opciones-area opt-result">
 		<div class="opt-fuente  col-md-4">
 		Ver Fuente
@@ -206,7 +206,7 @@ el proceso en la publicación de LOD. </p>
 		</div>
 		<div class="opt-grafo col-md-4">
 		Ver Grafo
-	
+
 		</div>
 		</div>
 		</div>
@@ -218,22 +218,22 @@ el proceso en la publicación de LOD. </p>
 
 
 		<div class="result col-md-9">
-			<div class="fuente-area col-md-14 text-center"> 
+			<div class="fuente-area col-md-14 text-center">
 			<span class="{{Icon}}"></span>
 			{{Origin}}
-			 <a href="#" title="QR Code" class="qricon" datauri ="{{URI}}"  onclick="qrmodalshow('{{URI}}','{{Origin}}','{{Icon}}');"   ><img src="/images/qr.png" width=14px ></a> 
+			 <a href="#" title="QR Code" class="qricon" datauri ="{{URI}}"  onclick="qrmodalshow('{{URI}}','{{Origin}}','{{Icon}}');"   ><img src="/images/qr.png" width=14px ></a>
 			 <span id="dwnload" class="glyphicon glyphicon-save" onclick="download('{{URI}}')"> </span>
 			<!--<a href="#" class="qricon" onclick="alert ('hola');"  >o</a>  -->
 			  <!-- <button type="button"  class="qricon" data-toggle="modal"  onclick="qrmodalshow(event);" data-target="#myqrmodal"> </button>-->
 			</div>
-		
-		<div class="result-text col-md-14">	
+
+		<div class="result-text col-md-14">
 		<span class="Title-result"> <u> {{Label}}   </u>  </span>
-         <a href="#" title="Favoritos" class="fav"  onclick="favaction ('{{URI}}','{{Label}}');"   ><img class= "imgfav" src="{{Fav}}" width=19px ></a> 
+         <a href="#" title="Favoritos" class="fav"  onclick="favaction ('{{URI}}','{{Label}}');"   ><img class= "imgfav" src="{{Fav}}" width=19px ></a>
       <!-- <img class= "imgfav" src="/images/stargray.png" width=19px >-->
 		<br/>
 		{{#each MatchsProperty}}
-												<b> {{ lang p }}</b> : 
+												<b> {{ lang p }}</b> :
 												<div class ="contvarpro" >
 													{{#if l}}
 													<span class= 'hglttxt'>{{{s}}}</span><a href='#' class='view_more_button' onclick="$(this).hide();$(this).parent().find('.rest_of_text').show();$(this).parent().find('.view_less_button').show();  ">...{{lang "text-more"}}</a><span class='rest_of_text hglttxt' style='display: none;'>{{{c}}}</span>
@@ -244,7 +244,7 @@ el proceso en la publicación de LOD. </p>
 
 												</div>
 												{{/each}}
-		
+
 		<div class="opciones-area opt-result">
 		<div class="col-md-4">
 		<a   class="opt-fuente" href="#"  data-uri="{{URI}}" data-endpoint="{{Origin}}" onclick="linkg2(event);" >{{ lang "view-source"}}</a>
@@ -266,7 +266,7 @@ el proceso en la publicación de LOD. </p>
 		 <div >
 				<div class="row">
 					<div class="col-md-9 text-center pagination">
-					
+
 					{{#with paginationSettings}}
 					<div id="page-selection" ></div>
 					{{/with}}
@@ -276,11 +276,11 @@ el proceso en la publicación de LOD. </p>
 		</div>
 	    </div>
 
-	   
+
 
 	   </div>
-	   
- </div> 
+
+ </div>
 
  <div class="modal   fade" id="myqrmodal" role="dialog">
     <div class="modal-dialog modal-sm">
@@ -293,19 +293,19 @@ el proceso en la publicación de LOD. </p>
           <ul class="nav navqr nav-tabs">
         <li class="active"><a data-toggle="tab" href="#qrarea1"> RDF </a></li>
         <li class="optionalqr"><a data-toggle="tab" href="#qrarea2"> FUENTE </a></li>
-          
+
           </ul>
         <div class="tab-content">
         <div id="qrarea1" class="tab-pane fade in active">
-        
+
         </div>
         <div id="qrarea2" class="tab-pane fade">
-        
+
         </div>
         </div>
          <!-- <div  class="qrarea" > -->
           </div>
-      
+
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
         </div>
@@ -348,12 +348,12 @@ el proceso en la publicación de LOD. </p>
  <!--	<div class="footer" >
 				<div class="row">
 					<div class="col-xs-12">
-					
+
 					{{#with paginationSettings}}
 					<div id="page-selection" ></div>
 					{{/with}}
 			</div>
 		</div>
 	</div>  -->
- 	 
+
 </template>

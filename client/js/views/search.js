@@ -391,13 +391,14 @@ this.SearchView = Backbone.View.extend({
             //App.resultCollection2.remove({});
             //var EntitySearch = get_radio_value("resourceType");
 
-console.log('entrol');
+
             var EntitySearch = get_radio_value("opciones");
 
             var FromListaux = get_checkList_values("repositoriesList");
             if (FromListaux.length > 0) {
 
                 FromList = FromListaux;
+                console.log(FromListaux);
 
             }
 
@@ -492,7 +493,11 @@ console.log('entrol');
                 int = '_';
             }
             //
-            var Query = "prefix text:<http://jena.apache.org/text#>\n";
+
+            var typeServer ='';
+            var Query='prefix text:<http://jena.apache.org/text#>\n PREFIX mm: <http://marmotta.apache.org/vocabulary/sparql-functions#> \n';
+
+
 
             Query += 'select *  {\n';
 
@@ -504,10 +509,15 @@ console.log('entrol');
             var ResultLimitSubQ = (AppFilt) ? '15' : '1000';
             var SubQN = 0;
             var sources = [];
+
+
             for (var oneQuery = 0; oneQuery < FromList.length; oneQuery++) {
                 var EndpointLocal = FromList[oneQuery].attributes['data-base'] ? FromList[oneQuery].attributes['data-base'].value : false;
                 var Service = FromList[oneQuery].attributes['data-endpoint'].value;
                 var ServiceName = FromList[oneQuery].attributes['data-name'].value;
+                var ServiceTypeServer = FromList[oneQuery].attributes['data-typeserver'].value;
+                typeServer=ServiceTypeServer;
+
                 for (var oneRes = 0; oneRes < ResqLis.length; oneRes++) {
                     for (var oneProp = 0; oneProp < ResqLis[oneRes].indexProperties.length; oneProp++) {
                         SubQN++;
@@ -523,18 +533,44 @@ console.log('entrol');
                         var Property_ = ResqLis[oneRes].indexProperties[oneProp];
                         var PropertyName_ = ResqLis[oneRes].indexPropertiesName[oneProp];
                         var Label_ = ResqLis[oneRes].labelProperty;
-                        Query += 'select   ?Score1 (\'' + ServiceName + '\' AS ?Endpoint) ?EntityURI (IRI(<' + Class_ + '>) AS ?EntityClass) ?EntityLabel (IRI(<' + Property_ + '>) AS ?Property) (\'' + PropertyName_ + '\' AS ?PropertyLabel) ?PropertyValue  (max(?Year1)as ?Year) (max(?Lang1) as ?Lang) (max(?Type1) as ?Type)  ((?Score1*if(count(?Score2)>0,2,1)*if(count(?Score3)>0,2,1)*if(count(?Score4)>0,' + ty + ',1)) as ?Score ) \n'; //(group_concat(?Sub1; separator = "#|#") as ?Sub)
-                        Query += '{\n';
-                        Query += '(?EntityURI ?Score1 ?PropertyValue) text:query (<' + Property_ + '> \'(' + TextSearch + ')\' ' + ResultLimitSubQ + ') .\n?EntityURI <' + Label_ + '> ?EntityLabel .\n';
-                        Query += 'filter(str(?PropertyValue)!=\'\') .\n';
-                        Query += "optional { (?EntityURI ?Score2 ?PropertyValue2) text:query (<http://purl.org/dc/terms/subject> '(" + int + ")' ) .  filter(str(?EntityURI)!=\'\') .} \n"
-                        //Query += "optional { ?EntityURI <http://purl.org/dc/terms/subject> ?Sub1 .  } \n"
-                        Query += "optional { ?EntityURI <http://purl.org/dc/terms/language> ?Lang1 .   } \n"
-                        Query += "optional { ?EntityURI <http://purl.org/dc/terms/language> ?Lang2 .  filter(str(?Lang2) = '" + idi + "'). bind( 1 as ?Score3  ).  } \n"
-                        Query += "optional { ?EntityURI <http://purl.org/dc/terms/issued> ?y2. bind( strbefore( ?y2, '-' ) as ?y3 ).  bind( strafter( ?y2, ' ' ) as ?y4 ). bind( if (str(?y3)='' && str(?y4)='',?y2,if(str(?y3)='',?y4,?y3)) as ?Year1 ).  }\n";
-                        Query += "optional { ?EntityURI a ?Type1 . filter (str(?Type1) != 'http://xmlns.com/foaf/0.1/Agent' &&  str(?Type1) != 'http://purl.org/ontology/bibo/Document') .   } \n"
-                        Query += "optional { {?EntityURI a <http://purl.org/ontology/bibo/Article> .  bind(1 as ?Score4  ). } union { ?EntityURI a <http://purl.org/net/nknouf/ns/bibtex#Mastersthesis> .  bind(1 as ?Score4  ). }  } \n"
-                        Query += '} group by ?Endpoint ?EntityURI ?EntityClass ?EntityLabel ?Property ?PropertyLabel ?PropertyValue ?Score1  \n';
+
+                        switch (typeServer) {
+                          case 'Apache Marmotta':
+                                  {
+                                    Query += 'select  (1 as  ?Score1) (\'' + ServiceName + '\' AS ?Endpoint) ?EntityURI (<' + Class_ + '> AS ?EntityClass)  ';
+                                    Query += '?EntityLabel (<' + Property_ + '> AS ?Property) (\'' + PropertyName_ + '\' AS ?PropertyLabel) ?PropertyValue   ';
+                                    Query += '?Year ?Lang  (<'+Class_+'> as ?Type) (1 as ?Score ) \n';
+                                    Query += '{\n';
+                                    Query += '?EntityURI <'+Property_+'> ?PropertyValue .';
+                                    Query += '?EntityURI <' + Label_ + '> ?EntityLabel .';
+                                    Query += "optional { ?EntityURI <http://purl.org/dc/terms/language> ?Lang .   } \n";
+                                    Query += "optional { ?EntityURI <http://purl.org/dc/terms/issued> ?Year.  }\n";
+                                    Query += 'optional { ?EntityURI a <' + Class_  + '> } \n';
+                                    Query += 'FILTER( mm:fulltext-search(str(?PropertyValue), "'+TextSearch+'", lang(?PropertyValue)) )';
+                                    Query += '}\n';
+
+                                  }
+
+                            break;
+
+                          default:
+                                  {
+                                    Query += 'select   ?Score1 (\'' + ServiceName + '\' AS ?Endpoint) ?EntityURI (IRI(<' + Class_ + '>) AS ?EntityClass) ?EntityLabel (IRI(<' + Property_ + '>) AS ?Property) (\'' + PropertyName_ + '\' AS ?PropertyLabel) ?PropertyValue  (max(?Year1)as ?Year) (max(?Lang1) as ?Lang) (max(?Type1) as ?Type)  ((?Score1*if(count(?Score2)>0,2,1)*if(count(?Score3)>0,2,1)*if(count(?Score4)>0,' + ty + ',1)) as ?Score ) \n'; //(group_concat(?Sub1; separator = "#|#") as ?Sub)
+                                    Query += '{\n';
+                                    Query += '(?EntityURI ?Score1 ?PropertyValue) text:query (<' + Property_ + '> \'(' + TextSearch + ')\' ' + ResultLimitSubQ + ') .\n?EntityURI <' + Label_ + '> ?EntityLabel .\n';
+                                    Query += 'filter(str(?PropertyValue)!=\'\') .\n';
+                                    Query += "optional { (?EntityURI ?Score2 ?PropertyValue2) text:query (<http://purl.org/dc/terms/subject> '(" + int + ")' ) .  filter(str(?EntityURI)!=\'\') .} \n"
+                                    //Query += "optional { ?EntityURI <http://purl.org/dc/terms/subject> ?Sub1 .  } \n"
+                                    Query += "optional { ?EntityURI <http://purl.org/dc/terms/language> ?Lang1 .   } \n"
+                                    Query += "optional { ?EntityURI <http://purl.org/dc/terms/language> ?Lang2 .  filter(str(?Lang2) = '" + idi + "'). bind( 1 as ?Score3  ).  } \n"
+                                    Query += "optional { ?EntityURI <http://purl.org/dc/terms/issued> ?y2. bind( strbefore( ?y2, '-' ) as ?y3 ).  bind( strafter( ?y2, ' ' ) as ?y4 ). bind( if (str(?y3)='' && str(?y4)='',?y2,if(str(?y3)='',?y4,?y3)) as ?Year1 ).  }\n";
+                                    Query += "optional { ?EntityURI a ?Type1 . filter (str(?Type1) != 'http://xmlns.com/foaf/0.1/Agent' &&  str(?Type1) != 'http://purl.org/ontology/bibo/Document') .   } \n"
+                                    Query += "optional { {?EntityURI a <http://purl.org/ontology/bibo/Article> .  bind(1 as ?Score4  ). } union { ?EntityURI a <http://purl.org/net/nknouf/ns/bibtex#Mastersthesis> .  bind(1 as ?Score4  ). }  } \n"
+                                    Query += '} group by ?Endpoint ?EntityURI ?EntityClass ?EntityLabel ?Property ?PropertyLabel ?PropertyValue ?Score1  \n';
+
+
+                                  }
+                        }
                         if (!EndpointLocal) {
                             Query += '}\n';
                         }

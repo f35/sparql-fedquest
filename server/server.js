@@ -2424,11 +2424,11 @@ Api.addRoute('sparql', {authRequired: false}, {
                 if (_.isUndefined(endpoint)) {
                     console.log('==Inserting new endpoint');
                     var color_id = colorId ? colorId : '#' + Math.floor(Math.random() * 16777215).toString(16);
-                    Endpoints.insert({name: graphName, colorid: color_id, endpoint: endpointURI, graphURI: defaultGraph, description: graphDescription, base: baseEndpoint, status: statusCode, lastMsg: response.msg, opt: optional, type: typeServer});
+                    Endpoints.insert({name: graphName, colorid: color_id, endpoint: endpointURI, graphURI: defaultGraph, description: graphDescription, base: baseEndpoint, status: statusCode, lastMsg: response.msg, opt: optional, typeServer: typeServer});
                     //updateGraph = true;
                 } else {
-                    console.log('==Updating endpoint ' + endpointURI + '<' + defaultGraph + '>');
-                    Endpoints.update({_id: endpoint._id}, {$set: {name: graphName, colorid: colorId, endpoint: endpointURI, graphURI: defaultGraph, description: graphDescription, base: baseEndpoint, status: statusCode, lastMsg: response.msg, opt: optional}});
+                    console.log('==Updating endpoint ' + endpointURI + '<' + defaultGraph + '>'+typeServer);
+                    Endpoints.update({_id: endpoint._id}, {$set: {name: graphName, colorid: colorId, endpoint: endpointURI, graphURI: defaultGraph, description: graphDescription, base: baseEndpoint, status: statusCode, lastMsg: response.msg, opt: optional, typeServer: typeServer}});
                 }
                 if (updateGraph) {
                     Properties.remove({endpoint: endpointURI, graphURI: defaultGraph});
