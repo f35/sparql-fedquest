@@ -1,7 +1,7 @@
 <template name='welcomePage'>
   <!-- <div class="wrapper">
 	  <div class="main"> -->
-	    
+
      <section class="lavel-up-header lavel-up-header-bg-img" data-stellar-background-ratio="0.5">
         <div class="lavel-up-color-overlay">
         <div class="container text-center">
@@ -26,24 +26,24 @@
               <input type="text" value="" name="terms" class="required form-control" id="mce-text" placeholder={{lang "placeholder-search"}} required
               onkeyup="if(event.keyCode == 13){$('#mc-embedded-subscribe').click();}" >
                           <span class="input-group-btn">
-                            <input type="button" value={{lang "search"}} name="subscribe" id="mc-embedded-subscribe" class="btn btn-default" onclick="search_query(event)">                   
+                            <input type="button" value={{lang "search"}} name="subscribe" id="mc-embedded-subscribe" class="btn btn-default" onclick="search_query(event)">
              </span>
-              
+
                         </div>
                       </div>
                    <!-- </form> -->
                   </div>
-                 
+
               </div>
-        
-           
-          
+
+
+
       </div><!--.row-->
           </div>
-    
+
         <form>
-       <div class=col-md-6 col-md-offset-2> 
-        <div class="cc-selector"> 
+       <div class=col-md-6 col-md-offset-2>
+        <div class="cc-selector">
         <input id="documentos" type="radio" name="opciones" value="documentos" />
         <label class="opciones-cc documentos" for="documentos" data-toggle="tooltip" title={{lang "tip-document"}}></label>
               <input id="autores" type="radio" name="opciones" value="autores" />
@@ -52,50 +52,51 @@
         <input id="colecciones" type="radio" name="opciones" value="colecciones" />
         <label class="opciones-cc colecciones" for="colecciones" data-toggle="tooltip" title={{lang "tip-collection"}}></label>
           </div>
-        
+
         </div>
               </form>
         </div>
-        {{#if user_access }} 
-          <div class="mostrar_reco" display = "none" > 
-     
-        {{#each recoavailable}}
-        <p>Recomendación: <img src={{icon}} width = {{sizeicon}} class="docrecomend" style="margin-top: -2px"> <a href={{uri}} target="_blank">{{title}}</a></p>       
-        {{/each}}
-         
+        {{#if user_access }}
+          <div class="mostrar_reco" display = "none" >
 
-        </div> 
+        {{#each recoavailable}}
+        <p>Recomendación: <img src={{icon}} width = {{sizeicon}} class="docrecomend" style="margin-top: -2px"> <a href={{uri}} target="_blank">{{title}}</a></p>
+        {{/each}}
+
+
+        </div>
         {{/if}}
 
          </div>
-      
-   
+
+
 
     </section>
-	    
+	    <!--
 	     <section class="page3">
         <div class="tech">
           <img src="images/tech-cloud.png" alt="joint" class="tech-logo">
-        
+
           <img src="images/joint-logo.png" alt="joint" class="tech-logo">
           <img src="images/meteor-logo.png" alt="joint" class="tech-logo" style="top:0px; right:0px">
-        
+
         </div>
 	      <div class="page_container">
           <h1>Making the Semantic Web more {{lang "bonjour"}}</h1>
           <h2><em>"Our idea there is to make the Semantic Web scale by relying on more simple servers, and more complex and intelligent clients."</em> - Ruben Verborgh</h2>
-          
-         
+
+
           <div class="btns">
   	        <a class="reload btn" href="https://github.com/peachananr/onepage-scroll">Download on Github</a>
   	      </div>
-    
+
   	    </div>
-        
+
       </section>
+		-->
       <section class="page4">
         <div class="page_container">
-            <h1>We are Involved</h1>
+            <h1>En colaboración con:</h1>
           <div class="partner-logos">
               <a href="https://www.facebook.com/GTR.CEDIA?fref=ts" target="_blank" class="logo">
                 <img src="images/gtr-logo.png" alt="GTR">

@@ -10,18 +10,18 @@
           </button>
 
             <a class="brand" style="margin: 0; float: none;" href="/" draggable="false">
-                  <img src="/images/sparql-logo-white.png" alt="ucuenca" style="height:50px" draggable="false">
+                  <img src="/images/libros.png" alt="ucuenca" style="height:50px" draggable="false">
             </a>
-            <span style="margin:0.4em; color:white;">FEDQuery</span>
+            <span style="margin:0.4em; color:white;">Biblioteca</span>
 
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
            <!-- <li><a href="/" draggable="false">{{ lang "Home" }}</a></li> -->
 	    <li><a href="/search" draggable="false">{{ lang "Search" }}</a></li>
-            <li><a href="/nlsearch" draggable="false">{{ lang "NL Search" }} ( <i>&beta;</i> )</a></li>
+          <!--  <li><a href="/nlsearch" draggable="false" enabled="false" hidden="true"  >{{ lang "NL Search" }} ( <i>&beta;</i> )</a></li> -->
             <li><a href="/stats" draggable="false">{{ lang "Statistics"}}</a></li>
-            {{#if access_adv }} 
+            {{#if access_adv }}
             <li><a href="/samples" draggable="false">{{lang "query-temp"}}</a></li>
             <li><a href="/dashboard" draggable="false">{{lang "query-builder"}}</a></li>
             {{/if}}
@@ -30,7 +30,7 @@
                 <li role="presentation" class="dropdown-header" draggable="false">SPARQL endpoint</li>
                 <li><a href="#" data-toggle="modal" data-target="#availableEndpoint" draggable="false">{{ lang "ava-endpoints"}}</a></li>
                 <li><a href="#" data-toggle="modal" data-target="#newEndpoint" draggable="false">{{ lang "new-endpoint"}}</a></li>
-                
+
               <!--
                 <li class="divider"></li>
                 <li role="presentation" class="dropdown-header">Otros</li>
@@ -38,7 +38,7 @@
                 -->
               </ul>
             </li>
-            {{#if access_level }} 
+            {{#if access_level }}
              <!--<li><a href="/profile"  draggable="false">{{lang "Administrar"}}</a></li> -->
              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" draggable="false" id="profile">{{ lang "Manage"}}
               <span class="caret"></span></a>
@@ -50,21 +50,21 @@
                </ul>
                </li>
             {{ else}}
-              {{#if currentUser}}  
-              <li><a href="/profile"  draggable="false">{{lang "Profile"}}</a></li> 
+              {{#if currentUser}}
+              <li><a href="/profile"  draggable="false">{{lang "Profile"}}</a></li>
               <li><a href="/favsearch" data-toggle="modal"  draggable="false"> Consultas </a></li>
               {{ else}}
 
               {{/if}}
              {{/if}}
              <!--<li><a href="#" data-toggle="modal" data-target="#myModal" draggable="false">{{lang "Help"}}</a></li>  -->
-           <li><a href="/help" data-toggle="modal" draggable="false">{{lang "Help"}}</a></li>  
+           <li><a href="/help" data-toggle="modal" draggable="false">{{lang "Help"}}</a></li>
           <!--  <li>  <div class="navbar-right"> {{> loginButtons}} </div></li> -->
           </ul>
            <ul class="nav navbar-nav navbar-right">
-            <li> {{> loginButtons}}</li>            
+            <li> {{> loginButtons}}</li>
           </ul>
-         
+
             <!-- <div class="nav navbar-nav navbar-right"> {{> loginButtons}} </div>-->
         </div>
       </div>
@@ -86,6 +86,3 @@
   </div>
 
 </template>
-
-
-

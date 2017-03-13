@@ -1145,7 +1145,7 @@ if (Meteor.isClient) {
 
                                     });
                                     //console.log (object);
-                                    //object.sources 
+                                    //object.sources
                                     // console.log (sources);
                                     return listsources;
                                 }
@@ -1479,10 +1479,10 @@ if (Meteor.isClient) {
                         return obj.fullName;
                     });
                     graph.endpointProperties = properties;
-                    /*      if (graph.endpointProperties [0]  === undefined) 
+                    /*      if (graph.endpointProperties [0]  === undefined)
                      {
                      console.log ('Vacio');
-                     
+
                      }else {
                      console.log ('No Vacio');
                      console.log (graph.endpointProperties[0]);
@@ -1506,7 +1506,7 @@ if (Meteor.isClient) {
                             }
                         }
                         //   console.log ("Rel");
-                        //   console.log (entidadesrel); 
+                        //   console.log (entidadesrel);
                         //  graph.endpointProperties[j].enti = entidadestext ;
                         var name = graph.endpointProperties[j].name;
                         if (name.length > 10) {
@@ -1553,8 +1553,8 @@ if (Meteor.isClient) {
                     //console.log(graph);
                 });
 
-                /*var entities = Properties.find( {endpoint: {$in :_.pluck(endpoints, 'endpoint')}, 
-                 graphURI: {$in: _.pluck(endpoints, 'graphURI')}}, 
+                /*var entities = Properties.find( {endpoint: {$in :_.pluck(endpoints, 'endpoint')},
+                 graphURI: {$in: _.pluck(endpoints, 'graphURI')}},
                  {sort: {endpoint: -1, graphURI: -1}}).fetch();
                  entities = _.pluck(entities, 'subjects');
                  var values = [];
@@ -1571,7 +1571,7 @@ if (Meteor.isClient) {
             return response;
             //return _.uniq(values, false, function(obj){return obj.fullName;});
         }/*,
-         
+
          endpointProperty: function(){
          Session.set('properties', Properties.find().fetch());
          console.log('#### : ' + Properties.find().fetch().length);
@@ -1613,8 +1613,8 @@ if (Meteor.isClient) {
      //  } else {
      //       return false;
      //  }
-     
-     
+
+
      }
      });*/
 
@@ -2155,6 +2155,9 @@ if (Meteor.isClient) {
                     }
 
                     var Org = {};
+
+
+
                     if (NumMode == 1) {
                         Org = resp[k].Endpoint.value;
                     }
@@ -2167,7 +2170,7 @@ if (Meteor.isClient) {
                     //if (!_.isEmpty(Org)){
                     //Org=Org.name;
                     //}else{
-                    // Org='';      
+                    // Org='';
                     //}
 
                     OneResult.Origin = Org;
@@ -2188,14 +2191,53 @@ if (Meteor.isClient) {
                     switch (OneResult.Type) {
                         case 'http://xmlns.com/foaf/0.1/Person':
                             OneResult.Icon = 'glyphicon glyphicon-user';
+                            OneResult.Image='/images/personIcon.png'
                             break;
                         case 'http://purl.org/ontology/bibo/Collection':
                             OneResult.Icon = 'glyphicon glyphicon-folder-open';
+                            OneResult.Image='/images/CollectionIcon.png'
+
                             break;
                         default :
                             OneResult.Icon = 'glyphicon glyphicon-file';
+                            OneResult.Image='/images/documentIcon.png'
+
                             break;
                     }
+
+                    //Name of author
+                    try {
+                      OneResult.nameCreator = resp[k].name.value;
+
+                    } catch (e) {
+
+                    } finally {
+
+                    }
+
+
+
+                    //Asign name of source
+                    try {
+                      if(resp[k].EntityURI.value.includes('library')){
+
+                        OneResult.Source= 'CD-JBV';
+                      }
+                      else{
+                        OneResult.Source= 'Dspace UC';
+                      }
+                      if(OneResult.Image!= undefined){
+                        OneResult.Image = resp[k].Image.value;
+                      }
+
+                    } catch (e) {
+
+                    } finally {
+
+                    }
+
+
+
                     var Resourcesfav = Favresources.find({idUser: Meteor.userId()}).fetch();
 
                     var favorite = Resourcesfav.find(function (val) {
@@ -2212,12 +2254,12 @@ if (Meteor.isClient) {
                     }
 
 
-                    // OneResult.Fav = '/images/stargray.png'; 
+                    // OneResult.Fav = '/images/stargray.png';
 
                     toShow.push(OneResult);
                 } else {
                     //Add
-                    // 
+                    //
 
                     //Título largo
 
@@ -2599,13 +2641,13 @@ if (Meteor.isClient) {
             "search-option": "Buscando por : ",
             "advance-search": "Búsqueda Avanzada",
             "sug": "Sugerencias",
-            "fac": "Búsqueda por facetas",
+            "fac": "Filtros",
             "noData": "No hay datos",
             "text-more": "Más",
             "text-less": "Menos",
-            "view-source": "Ver Fuente",
-            "view-rdf": "Ver RDF",
-            "view-graph": "Ver Grafo",
+            "view-source": "Fuente",
+            "view-rdf": "RDF",
+            "view-graph": "Grafo",
             "Name": "Nombre Completo",
             "First Name": "Nombres",
             "Last Name": "Apellidos",
@@ -2755,49 +2797,49 @@ if (Meteor.isClient) {
 
     /*
      Template.header.events({
-     
+
      setEvents: function (divNode) {
-     $("#lang-esp").click(function () {   
+     $("#lang-esp").click(function () {
      alert ("Hola");
      lang.init("SESSION","es");
      //   change_language("es");
-     
+
      });
-     
-     $("#lang-en").click(function () {   
-     
+
+     $("#lang-en").click(function () {
+
      // lang.init("SESSION","en");
      // change_language("en");
-     
+
      });
-     
-     
+
+
      }
-     
-     
-     
+
+
+
      });
-     
-     
+
+
      Template.header.helpers({
      setEvents: function (divNode) {
-     $("#lang-esp").click(function () {   
+     $("#lang-esp").click(function () {
      alert ("Hola");
      lang.init("SESSION","es");
      //   change_language("es");
-     
+
      });
-     
-     $("#lang-en").click(function () {   
-     
+
+     $("#lang-en").click(function () {
+
      // lang.init("SESSION","en");
      // change_language("en");
-     
+
      });
-     
-     
+
+
      }
-     
+
      });
      */
     function deleteUser(e) {
@@ -2857,5 +2899,3 @@ if (Meteor.isClient) {
 
 
 }
-
-

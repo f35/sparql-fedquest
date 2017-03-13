@@ -516,6 +516,8 @@ this.SearchView = Backbone.View.extend({
                 var Service = FromList[oneQuery].attributes['data-endpoint'].value;
                 var ServiceName = FromList[oneQuery].attributes['data-name'].value;
                 var ServiceTypeServer = FromList[oneQuery].attributes['data-typeserver'].value;
+                var ServiceGrapUri = FromList[oneQuery].attributes['data-graphuri'].value;
+
                 typeServer=ServiceTypeServer;
 
                 for (var oneRes = 0; oneRes < ResqLis.length; oneRes++) {
@@ -539,15 +541,20 @@ this.SearchView = Backbone.View.extend({
                                   {
                                     Query += 'select  (1 as  ?Score1) (\'' + ServiceName + '\' AS ?Endpoint) ?EntityURI (<' + Class_ + '> AS ?EntityClass)  ';
                                     Query += '?EntityLabel (<' + Property_ + '> AS ?Property) (\'' + PropertyName_ + '\' AS ?PropertyLabel) ?PropertyValue   ';
-                                    Query += '?Year ?Lang  (<'+Class_+'> as ?Type) (1 as ?Score ) \n';
-                                    Query += '{\n';
+                                    Query += '?Year ?Lang  (<'+Class_+'> as ?Type) (1 as ?Score )  ?Image ?name \n';
+                                    Query += '{  ';//graph <'+ServiceGrapUri+'> {\n ' ;
                                     Query += '?EntityURI <'+Property_+'> ?PropertyValue .';
                                     Query += '?EntityURI <' + Label_ + '> ?EntityLabel .';
                                     Query += "optional { ?EntityURI <http://purl.org/dc/terms/language> ?Lang .   } \n";
-                                    Query += "optional { ?EntityURI <http://purl.org/dc/terms/issued> ?Year.  }\n";
+                                    Query += "optional { ?EntityURI <http://purl.org/dc/terms/issued> ?Year .  }\n";
+                                    Query += "optional { ?EntityURI <http://purl.org/ontology/bibo/Image> ?Image .  }\n";
+                                    Query += "optional { ?EntityURI  <http://purl.org/dc/terms/creator> ?creator . }\n";
+                                    Query += "optional { ?creator <http://xmlns.com/foaf/0.1/name> ?name .}\n";
                                     Query += 'optional { ?EntityURI a <' + Class_  + '> } \n';
-                                    Query += 'FILTER( mm:fulltext-search(str(?PropertyValue), "'+TextSearch+'", lang(?PropertyValue)) )';
-                                    Query += '}\n';
+                                    var auxFullText='FILTER( mm:fulltext-search(str(?PropertyValue), "'+TextSearch+'") )';
+                                    Query += auxFullText.replace(/AND/g, "&");
+;
+                                    Query += '} limit 50 \n';
 
                                   }
 
@@ -584,17 +591,17 @@ this.SearchView = Backbone.View.extend({
                 sources.push(source);
 
             }
-            console.log("Hasta aqui");
-            console.log(sources);
+          //  console.log("Hasta aqui");
+          //console.log(sources);
             if (!_.isNull(Meteor.userId())) {
                 var rest = Meteor.call('savesearch', originTextSearch, sources, EntitySearch, function (error, result) {
-                    console.log(result);
+                    //console.log(result);
                 });
             }
 
-            Query += ' . filter(str(?EntityURI)!=\'\') . }  order by DESC(?Score)  \n  ' + ResultLimit;
+            Query += ' . filter(str(?EntityURI)!=\'\') . }  order by DESC(?Score)  \n  ' + ResultLimit+' ';
             var jsonRequest = {"sparql": Query, "validateQuery": false, "MainVar": "EntityURI", "ApplyFilter": AppFilt};
-            console.log(jsonRequest);
+            //console.log(jsonRequest);
             Session.set('jsonRequest', jsonRequest);
             App.SearchRun(0, 1);
             //Session.set('Qmode', 1);
@@ -634,7 +641,7 @@ function darclick(FromList) {
         // alert("Hola");
         for (var i = 0; i < en.length; i++) {
             var result = en[i];
-            FromList.push({attributes: {"data-base": {"value": result.base}, "data-endpoint": {"value": result.endpoint}, "data-graphuri": {"value": result.graphURI}, "data-name": {"value": result.name}}});
+            FromList.push({attributes: {"data-base": {"value": result.base}, "data-endpoint": {"value": result.endpoint}, "data-graphuri": {"value": result.graphURI}, "data-name": {"value": result.name},"data-typeserver": {"value": result.typeServer}}});
             //FromList.push({attributes: {"data-base": {"value": true}, "data-endpoint": {"value": result.endpoint}, "data-graphuri": {"value": result.graphURI}, "data-name": {"value": result.name}}});
         }
         $('input.runSearch').click();

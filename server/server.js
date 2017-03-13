@@ -673,11 +673,20 @@ var num_auto=0;
                 console.log('Error Sugg_ '+JSON.stringify(objQuery));
                 continue;
             }
-            var r = result.resultSet.value;
-            var lsp = JSON.parse(r).results.bindings;
-            for (var k = 0; k < lsp.length; k++) {
-                resp.push({d: lsp[k].p.value, s: lsp[k].Score.value});
+            //
+            try {
+              var r = result.resultSet.value;
+
+              var lsp = JSON.parse(r).results.bindings;
+              for (var k = 0; k < lsp.length; k++) {
+                  resp.push({d: lsp[k].p.value, s: lsp[k].Score.value});
+              }
+            } catch (e) {
+                console.log("error en doQueryCacheStats ");
+            } finally {
+
             }
+
             var respo = resp.sort(function (a, b) {
                 return b.s - a.s;
             });
@@ -1037,8 +1046,8 @@ Api.addRoute('sparql', {authRequired: false}, {
             },
             doQuery: function (jsonRequest) {
                 console.log('ConsultaQ');
-                console.log(jsonRequest);
-                var timeout = jsonRequest.timeout ? jsonRequest.timeout : 30000
+                //console.log(jsonRequest);
+                var timeout = jsonRequest.timeout ? jsonRequest.timeout : 300000
                 var response = {}
                 response.statusCode = 200;
                 response.msg = undefined;
@@ -1381,8 +1390,8 @@ Api.addRoute('sparql', {authRequired: false}, {
                         var cacheo = false;
                         if (0 == k.length) {
                             cacheo = true;
-                            l = Meteor.call("runQuery", i.endpoint, i.graphURI, a.sparql, undefined, g);
-                            //console.log(l.content);
+                            l = Meteor.call("runQuery", i.endpoint, i.graphURI, a.sparql, undefined, g,i.typeServer);
+                            //console.log('PRINTtypeserversL'+l.content);
                             var m = JSON.parse(l.content);
                             if (c) {
                                 var n = Math.max.apply(Math, m.results.bindings.map(function (a) {
@@ -1638,6 +1647,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                             x = w[0].nresult + 1;
                         }
                         var k2 = Cache.find({key: j, original: true}, {limit: 1, skip: 0}).fetch();
+
                         var y = {};
                         var z = {};
                         var facetedTotals = {};
@@ -1648,22 +1658,38 @@ Api.addRoute('sparql', {authRequired: false}, {
                             if (z.results) {
                                 z.results.bindings = [];
                             } else {
-                                console.log(y.content);
+                                console.log("contenido cache "+y.content);
                             }
                         } else {
+                          try{
                             y = k[0].value;
-                            z = JSON.parse(y.content);
+                            z = JSON.parse(y);
+
+
+                          }catch(error){
+
+
+                          }
+
                         }
                         for (var t = 0; t < k.length; t++) {
                             var A = k[t].value;
-                            var B = JSON.parse(A.content);
-                            if (B.results) {
-                                if (B.results.bindings.length > 0) {
-                                    z.results.bindings.push(B.results.bindings[0]);
-                                }
-                            } else {
-                                z.results.bindings.push(B);
+                            var B = null;
+                              try{
+                             B = JSON.parse(A.content);
+                             if (B.results) {
+                                 if (B.results.bindings.length > 0) {
+                                     z.results.bindings.push(B.results.bindings[0]);
+                                 }
+                             } else {
+                                 z.results.bindings.push(B);
+                             }
+
+                            }catch(error){
+
+
                             }
+
                         }
                         y.content = JSON.stringify(z);
                         h.resultSet = y;
@@ -1680,7 +1706,7 @@ Api.addRoute('sparql', {authRequired: false}, {
             },
             doQueryDesc: function (jsonRequest, endpoint) {
                 console.log('ConsultaQ');
-                console.log(jsonRequest);
+                console.log("doQueryDesc"+jsonRequest);
                 var timeout = jsonRequest.timeout ? jsonRequest.timeout : 30000
                 var response = {}
                 response.statusCode = 200;
@@ -1769,7 +1795,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                 timeout = _.isUndefined(timeout) ? '0' : timeout;
                 //return HTTP.get(endpointURI,
                 var result;
-                console.log('marmotta'+ typeServer);
+                console.log('marmotta tipo servers'+ typeServer);
 
                 switch(typeServer) {
                   case "Fuseki":
@@ -1831,7 +1857,7 @@ Api.addRoute('sparql', {authRequired: false}, {
 
                     }
 
-                   console.log(result);
+                  // console.log(result);
                  }
 
 

@@ -13,7 +13,7 @@
 		<div class="Search-bar input-group">
 		  <input type="text" value="" name="terms" onclick="Session.set('auxAct',Session.get('auxAct')+1);" onkeydown="Session.set('auxAct',Session.get('auxAct')+1); if(event.keyCode == 13){$('.runSearch').click();}" class="required form-control textToSearch" id="mce-text" placeholder={{lang "placeholder-search"}} required>
                           <span class="input-group-btn">
-                            <input type="button" value={{lang "search"}} name="subscribe" id="mc-embedded-subscribe" class="btn btn-default runSearch" >
+                            <input type="button" value={{lang "search"}} name="subscribe" id="mc-embedded-subscribe" class="btn btn-search runSearch" >
 						 </span>
 		</div>
 		</div>
@@ -60,8 +60,7 @@
 		<div class="second-area">
 	    <div class="row">
 			<div class="sugestion-area col-md-3">
-
-                                <div class="sugestion-panel" id = "pfac">
+        <div class="sugestion-panel" id = "pfac">
 					<span id="Title-suggestion" > <b>{{lang "fac"}} </b>  </span>
 					<span class = "{{DespFac}}" id= "expandfac"  onclick = "desplegar2 (this)"  > </span>
 					<div class="result-suggestion collapse" id = "fac" style="padding: 5px;">
@@ -218,47 +217,87 @@ el proceso en la publicación de LOD. </p>
 
 
 		<div class="result col-md-9">
-			<div class="fuente-area col-md-14 text-center">
-			<span class="{{Icon}}"></span>
-			{{Origin}}
-			 <a href="#" title="QR Code" class="qricon" datauri ="{{URI}}"  onclick="qrmodalshow('{{URI}}','{{Origin}}','{{Icon}}');"   ><img src="/images/qr.png" width=14px ></a>
-			 <span id="dwnload" class="glyphicon glyphicon-save" onclick="download('{{URI}}')"> </span>
-			<!--<a href="#" class="qricon" onclick="alert ('hola');"  >o</a>  -->
-			  <!-- <button type="button"  class="qricon" data-toggle="modal"  onclick="qrmodalshow(event);" data-target="#myqrmodal"> </button>-->
-			</div>
+				<div class="colu-1">
+				<!--	<img src="imagenHTML.jpg" border="0" width="10" height="10">-->
+							<div class="thumb thumb-in-list">
+										<div class="ntwrk-name">
+											{{Origin}}
+											<!--<span class="{{Icon}}"></span>-->
+										</div>
+										<div class="format">
+											<div class="format-misc">
+												<img src="{{Image}}" width="50px" height="58px">
 
-		<div class="result-text col-md-14">
-		<span class="Title-result"> <u> {{Label}}   </u>  </span>
-         <a href="#" title="Favoritos" class="fav"  onclick="favaction ('{{URI}}','{{Label}}');"   ><img class= "imgfav" src="{{Fav}}" width=19px ></a>
-      <!-- <img class= "imgfav" src="/images/stargray.png" width=19px >-->
-		<br/>
-		{{#each MatchsProperty}}
-												<b> {{ lang p }}</b> :
-												<div class ="contvarpro" >
-													{{#if l}}
-													<span class= 'hglttxt'>{{{s}}}</span><a href='#' class='view_more_button' onclick="$(this).hide();$(this).parent().find('.rest_of_text').show();$(this).parent().find('.view_less_button').show();  ">...{{lang "text-more"}}</a><span class='rest_of_text hglttxt' style='display: none;'>{{{c}}}</span>
-													<a href='#' class='view_less_button' onclick="$(this).hide();$(this).parent().find('.rest_of_text').hide();$(this).parent().find('.view_more_button').show();" style='display: none;' >...{{lang "text-less"}}</a>
-													{{else}}
-													{{{v}}}
-													{{/if}}
+											</div>
+											<span>
+												{{Source}}
+											</span>
+											<div>
+												<a href="#" title="QR Code" class="qricon" datauri ="{{URI}}"  onclick="qrmodalshow('{{URI}}','{{Origin}}','{{Icon}}');"   ><img src="/images/qr2.png" width=20px ></a>
+											 <span id="dwnload" class="glyphicon glyphicon-save" onclick="download('{{URI}}')"> </span>
+										 	</div>
+										</div>
+							</div>
 
-												</div>
-												{{/each}}
 
-		<div class="opciones-area opt-result">
-		<div class="col-md-4">
-		<a   class="opt-fuente" href="#"  data-uri="{{URI}}" data-endpoint="{{Origin}}" onclick="linkg2(event);" >{{ lang "view-source"}}</a>
-		</div>
-		<div class="col-md-4 opt-eldadiv">
-				<!--<a  class="opt-elda" href="{{URI}}" target="_blank" id="RDFPAGE" >{{ lang "view-rdf"}}</a>
-		</div>-->
-		<a  class="opt-elda" href="#"   data-uri="{{URI}}" onclick="rdflink ('{{URI}}');" >{{ lang "view-rdf"}}</a>
-		</div>
-		<div class="col-md-4"  >
-		<a  class="opt-grafo"  href="#"  data-uri="{{URI}}" data-endpoint="{{Origin}}" onclick="linkg(event);" >{{ lang "view-graph"}}</a>
-		</div>
-		</div>
-		</div>
+
+
+
+				</div>
+				<div class="colu-2">
+						<!--
+							<div class="fuente-area col-md-14 text-center">
+								<span class="{{Icon}}"></span>
+
+								 <a href="#" title="QR Code" class="qricon" datauri ="{{URI}}"  onclick="qrmodalshow('{{URI}}','{{Origin}}','{{Icon}}');"   ><img src="/images/qr.png" width=14px ></a>
+								 <span id="dwnload" class="glyphicon glyphicon-save" onclick="download('{{URI}}')"> </span>
+
+					-->
+								<!--<a href="#" class="qricon" onclick="alert ('hola');"  >o</a>  -->
+								  <!-- <button type="button"  class="qricon" data-toggle="modal"  onclick="qrmodalshow(event);" data-target="#myqrmodal"> </button>-->
+						<!--	</div>
+						-->
+						<div class="result-text col-md-14">
+							<span class="Title-result"> <b> {{Label}}
+								</b>
+							</span>
+						         <a href="#" title="Favoritos" class="fav"  onclick="favaction ('{{URI}}','{{Label}}');"   ><img class= "imgfav" src="{{Fav}}" width=19px ></a>
+					      <!-- <img class= "imgfav" src="/images/stargray.png" width=19px >-->
+							<br/>
+							<div>
+								<span  >
+									<b> {{nameCreator}}
+								</b>
+								</span>
+							</div>
+							{{#each MatchsProperty}}
+																	<b> {{ lang p }}</b> :
+																	<div class ="contvarpro" >
+																		{{#if l}}
+																		<span class= 'hglttxt'>{{{s}}}</span><a href='#' class='view_more_button' onclick="$(this).hide();$(this).parent().find('.rest_of_text').show();$(this).parent().find('.view_less_button').show();  ">...{{lang "text-more"}}</a><span class='rest_of_text hglttxt' style='display: none;'>{{{c}}}</span>
+																		<a href='#' class='view_less_button' onclick="$(this).hide();$(this).parent().find('.rest_of_text').hide();$(this).parent().find('.view_more_button').show();" style='display: none;' >...{{lang "text-less"}}</a>
+																		{{else}}
+																		{{{v}}}
+																		{{/if}}
+
+																	</div>
+						  {{/each}}
+
+						<div class="opciones-area opt-result">
+							<div class="col-md-4">
+							<a   class="opt-fuente" href="#"  data-uri="{{URI}}" data-endpoint="{{Origin}}" onclick="linkg2(event);" >{{ lang "view-source"}}</a>
+							</div>
+							<div class="col-md-4 opt-eldadiv">
+									<!--<a  class="opt-elda" href="{{URI}}" target="_blank" id="RDFPAGE" >{{ lang "view-rdf"}}</a>
+							</div>-->
+							<a  class="opt-elda" href="#"   data-uri="{{URI}}" onclick="rdflink ('{{URI}}');" >{{ lang "view-rdf"}}</a>
+							</div>
+							<div class="col-md-4"  >
+							<a  class="opt-grafo"  href="#"  data-uri="{{URI}}" data-endpoint="{{Origin}}" onclick="linkg(event);" >{{ lang "view-graph"}}</a>
+							</div>
+						</div>
+						</div>
+					</div>
 		</div>
 
          	    {{/each}}
