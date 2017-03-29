@@ -49,7 +49,7 @@ button:active{
 	min-height: 800px;
  }
 .lavel-up-color-overlay{
-	background: rgba(0, 0, 0, 0.55);
+	background: rgba(0, 0, 0, 0);
 	padding-top: 70px;
 	background-image: url('/images/pattern.png');
 	min-height: 800px;
@@ -128,8 +128,8 @@ margin-top: 10px;
 		margin-bottom: 20px;
 		font-size: 22px;
 	}
-	
-	
+
+
 }
 @media (max-width: 990px) {
 	.lu-newletter{
@@ -233,13 +233,13 @@ margin-top: 10px;
 }
 
 /* Contact form */
-.lu-contact-form input[type="text"], 
-.lu-contact-form input[type="email"], 
+.lu-contact-form input[type="text"],
+.lu-contact-form input[type="email"],
 .lu-contact-form textarea {
   background: rgba( 255,255,255,0.9 );
   border-radius: 0;
 }
-.lu-contact-form input[type="text"], 
+.lu-contact-form input[type="text"],
 .lu-contact-form input[type="email"] {
   padding: 10px 12px;
   height: 46px;
@@ -274,7 +274,7 @@ margin-top: 10px;
        -moz-appearance:none;
             appearance:none;
 			display: none;
-			
+
 }
 
 .cc-selector2 input{
@@ -283,7 +283,7 @@ margin-top: 10px;
        -moz-appearance:none;
             appearance:none;
 			display: none;
-			
+
 }
 
 
@@ -334,7 +334,7 @@ margin-top: 10px;
     -webkit-filter: brightness(1)  opacity(.9);
        -moz-filter: brightness(1)  opacity(.9);
             filter: brightness(1)  opacity(.9);
-	
+
 }
 
 
@@ -342,12 +342,12 @@ margin-top: 10px;
     -webkit-filter: brightness(1)  opacity(.9);
        -moz-filter: brightness(1)  opacity(.9);
             filter: brightness(1)  opacity(.9);
-	
+
 }
 
 .nada {
-     width: 50px; 
-     height: 50px; 
+     width: 50px;
+     height: 50px;
    /*  background: #428bca;*/
 }
 
@@ -359,7 +359,7 @@ margin-top: 10px;
        -moz-appearance:none;
             appearance:none;
 			display: none;
-			
+
 }
 
 
@@ -393,7 +393,7 @@ margin-top: 10px;
     -webkit-filter: brightness(1.5)  opacity(1);
        -moz-filter: brightness(1.5)  opacity(1);
             filter: brightness(1.5)  opacity(1);
-	
+
 }
 
 .cc-idiom  input:active +.opciones-lang{opacity: 1;}

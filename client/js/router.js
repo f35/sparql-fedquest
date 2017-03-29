@@ -10,7 +10,7 @@ this.Router = Backbone.Router.extend({
   },
 
   // key: route - value: router method to call
-  routes: { 
+  routes: {
   //  '': 'indexv',
   //  ':lan': 'index',
     'dashboard': 'dashboard',
@@ -18,7 +18,7 @@ this.Router = Backbone.Router.extend({
     //'search': 'search',
     'stats': 'stats',
     'dashboard/:id': 'dashboardParam',
-    'graph/:uri/:endpoint/:graphuri':'graph',
+    'graph/:uri/:endpoint/:graphuri/:typeserver':'graph',
     'search/:term/:type/:endpoint':'search',
     'search':'search',
     'nlsearch':'nlsearch',
@@ -41,7 +41,7 @@ this.Router = Backbone.Router.extend({
 $('div.navbar .collapse li a#options').hide();
 //new IndexView(lan).render();
 new IndexView().render();
-  
+
    // new IndexView(lan).render();
     console.log('Inicio Router index');
     $("div.main-ops").onepage_scroll({
@@ -52,7 +52,7 @@ new IndexView().render();
     $('div.slider').wmuSlider({
             touch: true,
             animation: 'slide'
-        }); 
+        });
   },
 
   //deprecated
@@ -64,13 +64,13 @@ new IndexView().render();
       Meteor.call('validar', 0 , function (error, result) {
      if (result) {
     console.log('entra a dashboard');
-    new DashboardView({}).render();      
+    new DashboardView({}).render();
      }else {
       window.open('/error',"_self" );
      return null;}
     });
     /*console.log('entra a dashboard');
-    new DashboardView({}).render();     */   
+    new DashboardView({}).render();     */
   },
   samples: function() {
       Meteor.call('validar', 0 , function (error, result) {
@@ -78,7 +78,7 @@ new IndexView().render();
     $('div.navbar .collapse li a#options').hide();
     $('div.navbar .collapse li a#options').css('pointer-events','none');
     console.log('entra a samples');
-    new SamplesView().render();  
+    new SamplesView().render();
      }else {
       window.open('/error',"_self" );
      return null;}
@@ -86,7 +86,7 @@ new IndexView().render();
     /*$('div.navbar .collapse li a#options').hide();
     $('div.navbar .collapse li a#options').css('pointer-events','none');
     console.log('entra a samples');
-    new SamplesView().render();    */    
+    new SamplesView().render();    */
 
   }/*, search2 : function (lan){
      lang.init("USER_PROFILE", lan );
@@ -98,52 +98,52 @@ new IndexView().render();
     $('div.navbar .collapse li a#options').hide();
     $('div.navbar .collapse li a#options').css('pointer-events','none');
     console.log('entra a search');
-    new SearchView(decodeURIComponent(s1),decodeURIComponent(s2), decodeURIComponent(s3)).render();        
+    new SearchView(decodeURIComponent(s1),decodeURIComponent(s2), decodeURIComponent(s3)).render();
   },
   nlsearch: function( ) {
     $('div.navbar .collapse li a#options').hide();
     $('div.navbar .collapse li a#options').css('pointer-events','none');
-    
-    new NLSearchView().render();        
+
+    new NLSearchView().render();
   },
   stats: function() {
    $('div.navbar .collapse li a#options').hide();
     $('div.navbar .collapse li a#options').css('pointer-events','none');
-    new StatsView().render();        
+    new StatsView().render();
   },
-   graph: function(v1, v2, v3) {
+   graph: function(v1, v2, v3, v4) {
      $('div.navbar .collapse li a#options').hide();
     $('div.navbar .collapse li a#options').css('pointer-events','none');
     console.log('entra a grafos');
-    new GraphView(decodeURIComponent(v1),decodeURIComponent(v2),decodeURIComponent(v3)).render();        
+    new GraphView(decodeURIComponent(v1),decodeURIComponent(v2),decodeURIComponent(v3),decodeURIComponent(v4)).render();
   },
 
   dashboardParam: function(id) {
      $('div.navbar .collapse li a#options').hide();
-    new DashboardView({idSample: id}).render();   
+    new DashboardView({idSample: id}).render();
   } ,
    login: function() {
     $('div.navbar .collapse li a#options').hide();
    //  $("div.main-ops").hide();
-    new LoginView().render();   
+    new LoginView().render();
   } ,  profile: function() {
     $('div.navbar .collapse li a#options').hide();
-    new ProfileView().render();   
+    new ProfileView().render();
   } ,  adminpanel: function() {
     $('div.navbar .collapse li a#options').hide();
     // Meteor.call('validar', 1 , function (error, result) {
     // if (result) {
-      new adminpanelView().render();  
+      new adminpanelView().render();
    //  }
    //  });
-   // new adminpanelView().render();   
+   // new adminpanelView().render();
   } , error : function () {
      $('div.navbar .collapse li a#options').hide();
-    new errorpagView().render(); 
+    new errorpagView().render();
   } ,  help : function () {
      $('div.navbar .collapse li a#options').hide();
-    new helpagView().render(); 
-  } , favsearch : function (){ 
+    new helpagView().render();
+  } , favsearch : function (){
     $('div.navbar .collapse li a#options').hide();
     new FavSearchView().render();
   }

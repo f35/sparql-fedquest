@@ -551,7 +551,7 @@ this.SearchView = Backbone.View.extend({
                                     Query += "optional { ?EntityURI  <http://purl.org/dc/terms/creator> ?creator . }\n";
                                     Query += "optional { ?creator <http://xmlns.com/foaf/0.1/name> ?name .}\n";
                                     Query += 'optional { ?EntityURI a <' + Class_  + '> } \n';
-                                    var auxFullText='FILTER( mm:fulltext-search(str(?PropertyValue), "'+TextSearch+'") )';
+                                    var auxFullText='FILTER( mm:fulltext-search(str(?PropertyValue), "'+TextSearch+'", "es") )';
                                     Query += auxFullText.replace(/AND/g, "&");
 ;
                                     Query += '} limit 50 \n';
@@ -705,7 +705,8 @@ linkg = function (e) {
     var v1 = encodeURIComponent(obj.attributes['data-uri'].value);
     var v2 = encodeURIComponent(en.endpoint);
     var v3 = encodeURIComponent(en.graphURI);
-    window.open('/graph/' + v1 + '/' + v2 + '/' + v3);
+    var v4 = encodeURIComponent(en.typeServer);
+    window.open('/graph/' + v1 + '/' + v2 + '/' + v3 + '/' + v4);
     interestitem(obj.attributes['data-uri'].value);
 };
 

@@ -1821,6 +1821,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                              "accept": "application/json"
                          }
                   };
+                  console.log(query);
                   result=Meteor.http.post(endpointURI, options);
 
 
@@ -1878,10 +1879,9 @@ Api.addRoute('sparql', {authRequired: false}, {
                 console.log('Consulta' + endpointURI + '+' + query + '+' + format+' '+typeServer);
                 // return HTTP.get(endpointURI,
                 var result;
+
                 switch(typeServer) {
                   case "Fuseki":
-                  console.log('entro en fuseki');
-
                       result= HTTP.post(endpointURI,
                         {
                             'params':
@@ -1894,26 +1894,22 @@ Api.addRoute('sparql', {authRequired: false}, {
                         });
                         break;
                 case "Apache Marmotta":
-                  console.log('entro en apache');
-                      var options = {
-                             params: {
-                                "query": query,
-                                "output": "json"
-                             },
-                             headers: {
-                                 "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                                 "accept": "application/json"
-                             }
-                      };
+                  var options = {
+                         params: {
+                            "query": query,
+                            "output": "json"
+                         },
+                         headers: {
+                             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                             "accept": "application/json"
+                         }
+                  };
+                  result=Meteor.http.post(endpointURI, options);
 
 
-                      result=Meteor.http.post(endpointURI, options);
-
-                      console.log("result:"+result.content);
-                      break;
-
+                    break;
                default:
-                console.log('entro en default');
+               try{
                  result= HTTP.post(endpointURI,
                    {
                        'params':
@@ -1924,25 +1920,31 @@ Api.addRoute('sparql', {authRequired: false}, {
                                    'timeout': timeout
                                }
                    });
+                 }catch(e)
+                 {
+                    try{
 
-                   if(!result){
-                     var options = {
-                            params: {
-                               "query": query,
-                               "output": "json"
-                            },
-                            headers: {
-                                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                                "accept": "application/json"
-                            }
-                     };
+                      var options = {
+                             params: {
+                                "query": query,
+                                "output": "json"
+                             },
+                             headers: {
+                                 "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                                 "accept": "application/json"
+                             }
+                      };
+                      result=Meteor.http.post(endpointURI, options);
+                    }
+                    catch(ee){
 
+                    }
+                 }
 
-                     result=Meteor.http.post(endpointURI, options);
-
-                   }
                    break;
                 }
+
+
                 return result;
             },
             pingServer: function (endpointURI, defaultGraph, typeServer) {
@@ -1983,7 +1985,7 @@ Api.addRoute('sparql', {authRequired: false}, {
                     var graph = endpointsArray[i].graphURI;
                     var endpoint = endpointsArray[i].endpoint;
                     try {
-                        var result = Meteor.call('runQuery', endpoint, '', 'ASK { graph   <' + graph + '> { <' + resource + '> ?a ?b } }', undefined, 10000);
+                        var result = Meteor.call('runQuery', endpoint, '', 'ASK { graph   <' + graph + '> { <' + resource + '> ?a ?b } }', undefined, 10000,endpointsArray[i].typeServer);
                         var content = EJSON.parse(result.content);
                         response.statusCode = result.statusCode;
                         if (result.statusCode != 200) {
