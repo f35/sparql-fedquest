@@ -2223,7 +2223,11 @@ if (Meteor.isClient) {
 
                         OneResult.Source= 'CD-JBV';
                       }
-                      else{
+                      else if(resp[k].EntityURI.value.includes('ebraryec')){
+                        OneResult.Source= 'Ebrary EC';
+                      }
+
+                      else {
                         OneResult.Source= 'Dspace UC';
                       }
                       if(OneResult.Image!= undefined){
