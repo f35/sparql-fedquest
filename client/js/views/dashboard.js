@@ -80,6 +80,11 @@ this.DashboardView = Backbone.View.extend({
         Tracker.autorun(function () {
             //var endpoints = Endpoints.find({status: 'A'},{fields:{endpoint: 1, graphURI: 1}}).fetch();
             var endpoints = Endpoints.find({status: 'A'}, {sort: {base: -1}}).fetch();
+              var config = Configuration.find().fetch();
+            console.log ("Tracker Config");
+            console.log (config);
+            var endpoints = Endpoints.find({status: 'A'}, {sort: {base: -1}}).fetch();
+            console.log (endpoints);
             if (endpoints.length > 0) {
                 Session.set('endpoints', endpoints);
             } else {
@@ -922,6 +927,7 @@ this.DashboardView = Backbone.View.extend({
             $('#sparqlEditor #avoidErrors')[0].checked = false;
             var sparql = App.fedQueryUtils.graphToSPARQL('warning');
             if (sparql) {
+                sparql=sparql.replace("@0@).", ").");
                 App.dashboard.sparqlEditor.setValue(sparql);
                 Meteor.call('validateSPARQL', App.dashboard.sparqlEditor.getValue(), function (error, result) {
                     if (result.statusCode != 200) {

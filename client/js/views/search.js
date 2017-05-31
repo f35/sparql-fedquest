@@ -11,6 +11,17 @@ function AndStr(str) {
     }
     return rs;
 }
+Array.prototype.getUnique = function () {
+    var u = {}, a = [];
+    for (var i = 0, l = this.length; i < l; ++i) {
+        if (u.hasOwnProperty(this[i])) {
+            continue;
+        }
+        a.push(this[i]);
+        u[this[i]] = 1;
+    }
+    return a;
+}
 
 String.prototype.keyword = function () {
     var x;
@@ -205,10 +216,13 @@ this.SearchView = Backbone.View.extend({
         var FromList = [];
         Session.set('DespSug', true);
         Session.set('DespFac', true);
+        Session.set('DespGeo', true);
 
         $("#pfac").css("min-height", "40px");
+        $("#pgeo").css("min-height", "10px");
         $("#sug").collapse('show');
         $("#fac").collapse('show');
+        $("#geo").collapse('show');
 
         var term = Session.get('s1');
         var type = Session.get('s2');
@@ -294,17 +308,9 @@ this.SearchView = Backbone.View.extend({
                 }
 
                 var t__ = "T";
-                var EntitySearch = get_radio_value("opciones");
-                switch (EntitySearch) {
-                    case 'autores':
-                        t__ = "P";
-                        break;
-                    case 'documentos':
-                        t__ = "D";
-                        break;
-                    case 'colecciones':
-                        t__ = "C";
-                        break;
+                var EntitySearch = $('input:radio[name=opciones]:checked').val();
+                if (EntitySearch != undefined) {
+                    t__ = EntitySearch;
                 }
                 if (term != null && term.trim().length > 3) {
 
@@ -339,32 +345,32 @@ this.SearchView = Backbone.View.extend({
 
 
 
+        /*
 
+         var prev;
+         $("#documentos2").click(function () {
+         cache = {};
+         actu = {};
+         var val = 'documentos';
+         prev = selec2(prev, val);
 
-        var prev;
-        $("#documentos2").click(function () {
-            cache = {};
-            actu = {};
-            var val = 'documentos';
-            prev = selec2(prev, val);
+         });
 
-        });
+         $("#autores2").click(function () {
+         cache = {};
+         actu = {};
+         var val = 'autores';
+         prev = selec2(prev, val);
+         console.log($('input[data-name=' + base + ']'));
+         });
 
-        $("#autores2").click(function () {
-            cache = {};
-            actu = {};
-            var val = 'autores';
-            prev = selec2(prev, val);
-            console.log($('input[data-name=' + base + ']'));
-        });
-
-        $("#colecciones2").click(function () {
-            cache = {};
-            actu = {};
-            var val = 'colecciones';
-            prev = selec2(prev, val);
-        });
-
+         $("#colecciones2").click(function () {
+         cache = {};
+         actu = {};
+         var val = 'colecciones';
+         prev = selec2(prev, val);
+         });
+         */
         $('#AllRepo').on('click', function (ev) {
             if (document.getElementsByName('repositoriesListAll')[0].checked) {
                 var inputs = document.getElementsByName('repositoriesList');
@@ -376,6 +382,7 @@ this.SearchView = Backbone.View.extend({
                 var inputs = document.getElementsByName('repositoriesList');
                 for (var i = 0; i < inputs.length; i++) {
                     inputs[i].disabled = false;
+                    inputs[i].checked = false;
                 }
             }
 
@@ -387,12 +394,13 @@ this.SearchView = Backbone.View.extend({
 
         $('input.runSearch').on('click', function (ev) {
 
-            //Session.set("auxAct", Session.get("auxAct") + 1);
-            //App.resultCollection2.remove({});
-            //var EntitySearch = get_radio_value("resourceType");
+            var ConfigInfo = Configuration.find().fetch();
 
-
-            var EntitySearch = get_radio_value("opciones");
+            var EntitySearch = "T";
+            var EntitySearch2 = $('input:radio[name=opciones]:checked').val();
+            if (EntitySearch2 != undefined) {
+                EntitySearch = EntitySearch2;
+            }
 
             var FromListaux = get_checkList_values("repositoriesList");
             if (FromListaux.length > 0) {
@@ -401,70 +409,53 @@ this.SearchView = Backbone.View.extend({
                 console.log(FromListaux);
 
             }
-
             var TextSearch = $("input.textToSearch").val().clearWords();
             var originTextSearch = $("input.textToSearch").val();
-            // alert(FromList);
-            // console.log($('input[data-name='+base+']'));
-            //console.log("Radio");
-            // console.log(EntitySearch);
-            // console.log("check");
-            // console.log(FromList);
-            // console.log("text");
-            //  console.log(TextSearch);
-
 
             var ResultLimit = ''; //limit 100
-            var DocSearchRequest = {};
-            DocSearchRequest.resourceClass = 'http://purl.org/ontology/bibo/Document';
-            DocSearchRequest.indexProperties = ['http://purl.org/ontology/bibo/abstract', 'http://purl.org/dc/terms/title', 'http://purl.org/dc/terms/subject'];
-            DocSearchRequest.indexPropertiesName = ['Abstract', 'Title', 'Subject'];
-            DocSearchRequest.labelProperty = 'http://purl.org/dc/terms/title';
 
-            var AuthSearchRequest = {};
-
-            AuthSearchRequest.resourceClass = 'http://xmlns.com/foaf/0.1/Person';
-            AuthSearchRequest.indexProperties = ['http://xmlns.com/foaf/0.1/name'];
-            AuthSearchRequest.indexPropertiesName = ['Name'];
-            AuthSearchRequest.labelProperty = 'http://xmlns.com/foaf/0.1/name';
-
-            var ColSearchRequest = {};
-
-            ColSearchRequest.resourceClass = 'http://purl.org/ontology/bibo/Collection';
-            ColSearchRequest.indexProperties = ['http://purl.org/dc/terms/description'];
-            ColSearchRequest.indexPropertiesName = ['Description'];
-            ColSearchRequest.labelProperty = 'http://purl.org/dc/terms/description';
-
-            //Session.set('Qmode2', 0);
             var AppFilt = false;
 
             var ResqLis = [];
-            switch (EntitySearch) {
 
-                case 'documentos':
-                    {
-                        ResqLis.push(DocSearchRequest);
+
+            var lsMC = [];
+            for (var indtem = 0; indtem < ConfigInfo.length; indtem++) {
+                lsMC = lsMC.concat(ConfigInfo[indtem].ConfEntity);
+            }
+
+            var MC = lsMC;
+            for (var qm = 0; qm < MC.length; qm++) {
+                if (MC[qm].URI == EntitySearch || EntitySearch == "T") {
+                    var clss = {};
+
+                    var lstemclss = ResqLis.filter(function (a) {
+                        return a.resourceClass == MC[qm].URI;
+                    });
+                    if (lstemclss.length != 0) {
+                        clss = lstemclss[0];
+                        clss.indexProperties = clss.indexProperties.concat(MC[qm].indexprop).getUnique();
+                        clss.indexPropertiesName = clss.indexProperties.map(function (a) {
+                            return a.split("").reverse().join("").split(/\/|#/)[0].split("").reverse().join("");
+                        });
+
+                    } else {
+                        clss.EntityName = MC[qm].name;
+                        clss.resourceClass = MC[qm].URI;
+                        clss.indexProperties = MC[qm].indexprop != null ? MC[qm].indexprop : [];
+                        clss.indexPropertiesName = clss.indexProperties.map(function (a) {
+                            return a.split("").reverse().join("").split(/\/|#/)[0].split("").reverse().join("");
+                        });
+                        clss.labelProperty = MC[qm].descriptiveprop;
+                        if (clss.indexProperties.length != 0) {
+                            ResqLis.push(clss);
+                            if (MC[qm].URI == EntitySearch) {
+                                AppFilt = MC[qm].espfilter;
+                            }
+                        }
+
                     }
-                    break;
-                case 'autores':
-                    {
-                        ResqLis.push(AuthSearchRequest);
-                        AppFilt = true;
-                    }
-                    break;
-                case 'colecciones':
-                    {
-                        ResqLis.push(ColSearchRequest);
-                        AppFilt = true;
-                    }
-                    break;
-                default:
-                    {
-                        ResqLis.push(DocSearchRequest);
-                        ResqLis.push(AuthSearchRequest);
-                        ResqLis.push(ColSearchRequest);
-                    }
-                    break;
+                }
             }
 
 
@@ -512,15 +503,29 @@ this.SearchView = Backbone.View.extend({
 
 
             for (var oneQuery = 0; oneQuery < FromList.length; oneQuery++) {
-                var EndpointLocal = FromList[oneQuery].attributes['data-base'] ? FromList[oneQuery].attributes['data-base'].value : false;
+                var EndpointLocal = false;//FromList[oneQuery].attributes['data-base'] ? FromList[oneQuery].attributes['data-base'].value : false;
                 var Service = FromList[oneQuery].attributes['data-endpoint'].value;
                 var ServiceName = FromList[oneQuery].attributes['data-name'].value;
                 var ServiceTypeServer = FromList[oneQuery].attributes['data-typeserver'].value;
                 var ServiceGrapUri = FromList[oneQuery].attributes['data-graphuri'].value;
 
                 typeServer=ServiceTypeServer;
+                var Endpoint__ = ConfigInfo.filter(function (a) {
+                    return a.Endpoint == Service;
+                });
 
                 for (var oneRes = 0; oneRes < ResqLis.length; oneRes++) {
+                    var Class__ = [];
+                    if (Endpoint__.length > 0) {
+                        Class__ = Endpoint__[0].EntSearch.filter(function (a) {
+                            return a == ResqLis[oneRes].resourceClass;
+                        });
+                    }
+
+                    if (Class__.length == 0) {
+                        continue;
+                    }
+
                     for (var oneProp = 0; oneProp < ResqLis[oneRes].indexProperties.length; oneProp++) {
                         SubQN++;
                         if (SubQN == 1) {
@@ -614,18 +619,18 @@ this.SearchView = Backbone.View.extend({
         if (term != "null") {
             $(".textToSearch").val(term);
 
-
-            switch (type) {
-                case 'autores':
-                    $("#autores2").attr('checked', 'checked');
-                    break;
-                case 'documentos':
-                    $("#documentos2").attr('checked', 'checked');
-                    break;
-                case 'colecciones':
-                    $("#colecciones2").attr('checked', 'checked');
-                    break;
-            }
+            /*
+             switch (type) {
+             case 'autores':
+             $("#autores2").attr('checked', 'checked');
+             break;
+             case 'documentos':
+             $("#documentos2").attr('checked', 'checked');
+             break;
+             case 'colecciones':
+             $("#colecciones2").attr('checked', 'checked');
+             break;
+             }*/
 
             darclick(FromList);
         }
@@ -751,7 +756,13 @@ linkg2 = function (e) {
     var v2 = en.endpoint;
     var v3 = en.graphURI;
     var redirectWindow = window.open('', '_blank');
-    Meteor.call('runQuery', v2, v3, 'select ?a {<' + v1 + '> <http://purl.org/ontology/bibo/handle> ?a} limit 1', function (error, result) {
+
+    var source = Configuration.find({"Endpoint": v2}).fetch()[0].Source;
+    if (source == undefined || source == "---") {
+        source = "http://purl.org/ontology/bibo/handle";
+    }
+
+    Meteor.call('runQuery', v2, v3, 'select ?a {<' + v1 + '>  <' + source + '> ?a} limit 1', function (error, result) {
         if (result) {
             var r = JSON.parse(result.content).results.bindings;
             if (r.length == 0) {
@@ -825,8 +836,23 @@ ValidateSuggestionQuery = function (query) {
 };
 
 actAHyper = function (e) {
-    //Session.set("auxAct", Session.get("auxAct") + 1);
-    //App.resultCollection2.remove({});
+    var ConfigInfo = Configuration.find().fetch();
+
+    var t__ = "T";
+    var EntitySearch = $('input:radio[name=opciones]:checked').val();
+    if (EntitySearch != undefined) {
+        t__ = EntitySearch;
+    }
+    var EntitySearch = t__;
+
+    var lsMC = [];
+    for (var indtem = 0; indtem < ConfigInfo.length; indtem++) {
+        lsMC = lsMC.concat(ConfigInfo[indtem].ConfEntity);
+    }
+    var cl = lsMC.filter(function (a) {
+        return a.URI == EntitySearch;
+    });
+    cl = cl[0];
 
     var usr = Profile.findOne({idProfile: Meteor.userId()});
     var idi = 'none';
@@ -865,10 +891,7 @@ actAHyper = function (e) {
         resp = resp[0];
         respp = 1;
     } else {
-        var EntitySearch = get_radio_value("opciones");
-        if (EntitySearch != "documentos") {
-            AppFilt = true;
-        }
+        AppFilt = cl.espfilter;
         respp = 2;
         resp = sq.match(new RegExp("\\((.*)\\)(.*)\\((.*)\\)", "g"))[0];
     }
@@ -933,7 +956,7 @@ actAHyper = function (e) {
     Session.set('TypeVar', TypeVar);
     Session.set('TitleVar', TitleVar[0]);
     for (var oneQuery = 0; oneQuery < FromList.length; oneQuery++) {
-        var EndpointLocal = FromList[oneQuery].attributes['data-base'] ? FromList[oneQuery].attributes['data-base'].value : false;
+        var EndpointLocal = false;//FromList[oneQuery].attributes['data-base'] ? FromList[oneQuery].attributes['data-base'].value : false;
         var Service = FromList[oneQuery].attributes['data-endpoint'].value;
         var ServiceName = FromList[oneQuery].attributes['data-name'].value;
         SubQN++;
@@ -945,13 +968,14 @@ actAHyper = function (e) {
         if (!EndpointLocal) {
             Query += 'service <' + Service + '> {\n';
         }
-        var NewSQ2 = NewSQ.replace(new RegExp("SELECT DISTINCT", "g"), "SELECT DISTINCT ('" + ServiceName + "' AS ?Endpoint) ?Score2 ?Score3 ?Score4 ");
+        var NewSQ2 = NewSQ.replace(new RegExp("SELECT DISTINCT", "g"), "SELECT DISTINCT ?Endpoint ?Score2 ?Score3 ?Score4 ");
         var sr = '';
         if (respp == 2) {
             sr = "";
         } else {
-            sr = "  bind(1 as ?Score1). ";
+            sr = "  bind(1 as ?Score1) . ";
         }
+        sr += "  bind ('" + ServiceName + "' AS ?Endpoint) . ";
         NewSQ2 = NewSQ2.replace(/\}\n\}$/, sr + "optional { (" + MainVar + " ?Score2 ?PropertyValue2) <http://jena.apache.org/text#query> (<http://purl.org/dc/terms/subject> '(" + int + ")' ) .    filter(str(" + MainVar + ")!=\'\') . } \n   optional { " + MainVar + " <http://purl.org/dc/terms/language> ?Lang1 .  } \n optional { " + MainVar + " <http://purl.org/dc/terms/language> ?Lang2 .  filter(str(?Lang2) = '" + idi + "'). bind( 1 as ?Score3  ).  } \n optional { " + MainVar + " <http://purl.org/dc/terms/issued> ?y2. bind( strbefore( ?y2, '-' ) as ?y3 ).  bind( strafter( ?y2, ' ' ) as ?y4 ). bind( if (str(?y3)='' && str(?y4)='',?y2,if(str(?y3)='',?y4,?y3)) as ?Year1 ).  }\n  optional { " + MainVar + " a ?Type1 . filter (str(?Type1) != 'http://xmlns.com/foaf/0.1/Agent' &&  str(?Type1) != 'http://purl.org/ontology/bibo/Document')  } \n optional { {" + MainVar + " a <http://purl.org/ontology/bibo/Article> .  bind(1 as ?Score4  ). } union { " + MainVar + " a <http://purl.org/net/nknouf/ns/bibtex#Mastersthesis> .  bind(1 as ?Score4  ). }  } \n }} ");
 
         Query += NewSQ2 + "\n";
@@ -1169,11 +1193,32 @@ desplegar = function (e) {
     }
     //alert ("Desplegar");
 }
+
+
+desplegar3 = function (e) {
+// $("#sug").collapse('toggle');
+
+    if (Session.get('DespGeo')) {
+        $("#pgeo").css("min-height", "10px");
+        $("#geo").collapse('hide');
+        Session.set('DespGeo', false);
+        // $(".sugestion-panel").css ("min-height", "400px");
+
+    } else {
+        $("#geo").collapse('show');
+        Session.set('DespGeo', true);
+        //$(".sugestion-panel").css ("min-height", "400px");
+        //   $("#sug").collapse();
+    }
+//alert ("Desplegar");
+}
+
 desplegar2 = function (e) {
-    // $("#sug").collapse('toggle');
+// $("#sug").collapse('toggle');
 
     if (Session.get('DespFac')) {
         $("#pfac").css("min-height", "40px");
+        $("#pgeo").css("min-height", "10px");
         $("#fac").collapse('hide');
         Session.set('DespFac', false);
         // $(".sugestion-panel").css ("min-height", "400px");
@@ -1184,5 +1229,35 @@ desplegar2 = function (e) {
         //$(".sugestion-panel").css ("min-height", "400px");
         //   $("#sug").collapse();
     }
-    //alert ("Desplegar");
+//alert ("Desplegar");
+}
+
+Template.search.events({
+    'click .opciones-cc'(e) {
+        console.log("Evento");
+        console.log(e.target.title);
+        var button = e.target.title;
+        if ($("input:radio[id='" + button + "']").prop("checked")) {
+            $("input:radio[id='" + button + "']").prop("checked", false);
+            $(".recurso").text(lang.lang("resources-search"));
+        } else {
+            $("input:radio[id='" + button + "']").prop("checked", true);
+            $(".recurso").text(lang.lang("search-option") + button);
+        }
+    }
+
+});
+/*
+ Template.search.onRendered( function () {
+ // Session.get('s2');
+ console.log ("RECEPCION DE PARAMETROS");
+ console.log (Session.get('s2'));
+ $("input:radio[value='"+Session.get('s2')+"']").prop("checked",true);
+ });*/
+
+Template.search.rendered = function () {
+    console.log("RECEPCION DE PARAMETROS");
+    console.log(Session.get('s2'));
+    $("input:radio[value='" + Session.get('s2') + "']").prop("checked", true);
+    console.log($("input:radio[value='" + Session.get('s2') + "']"));
 }

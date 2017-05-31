@@ -1,6 +1,25 @@
+
+/* this.Images = new Meteor.Files({
+ debug: true,
+ collectionName: 'Images',
+ allowClientCode: false, // Disallow remove files from Client
+ storagePath:  'prueba/images' ,
+ onBeforeUpload: function (file) {
+ // Allow upload files under 10MB, and only in png/jpg/jpeg formats
+ if (file.size <= 1024*1024*10 && /png|jpg|jpeg/i.test(file.extension)) {
+ return true;
+ } else {
+ return 'Please upload image, with size equal or less than 10MB';
+ }
+ }
+ });
+ */
+
+
 if (Meteor.isClient) {
 
     Session.set('AuxCargS', 0);
+
 
     var _logout = Meteor.logout;
     Meteor.logout = function customLogout() {
@@ -35,6 +54,7 @@ if (Meteor.isClient) {
     Tracker.autorun(function () {
         Meteor.subscribe("statsc");
         Meteor.subscribe("allproperties");
+        Meteor.subscribe("allentities");
         Meteor.subscribe("endpoints");
         Meteor.subscribe("queries");
         Meteor.subscribe("prefixes");
@@ -42,7 +62,15 @@ if (Meteor.isClient) {
         Meteor.subscribe("searchs");
         Meteor.subscribe("favresources");
         Meteor.subscribe("recomendation");
+        const Conf = Meteor.subscribe("configuration");
+        // var  Subs = Meteor.subscribe ("configuration");
+        Meteor.subscribe('files.images.all');
+        Meteor.subscribe('files.cFiles.all');
+        //Meteor.subscribe("recomendation");
         // Meteor.subscribe("cache");
+        const val = Conf.ready();
+        Session.set('Conf', val);
+        //   Session.set ('Sub', Subs );
 
     });
 
@@ -50,6 +78,7 @@ if (Meteor.isClient) {
     this.Statsc = new Meteor.Collection("statsc");
     this.Graphs = new Meteor.Collection("graphs");
     this.Properties = new Meteor.Collection("properties");
+    this.Entities = new Meteor.Collection("entities");
     this.Prefixes = new Meteor.Collection("prefixes");
     this.Endpoints = new Meteor.Collection("endpoints");
     this.Queries = new Meteor.Collection("queries");
@@ -57,10 +86,21 @@ if (Meteor.isClient) {
     this.Searchs = new Meteor.Collection("searchs");
     this.Recomendation = new Meteor.Collection("recomendation");
     this.Favresources = new Meteor.Collection("favresources");
+    this.Configuration = new Meteor.Collection("configuration");
+    this.Images = new FilesCollection({collectionName: 'Images'});
+    this.cFiles = new FilesCollection({collectionName: 'cFiles'});
+    // this.Images = new Meteor.Collection ("Images");
+
+
+
+
+
+
     this.App.resultCollection = new Meteor.Collection(null);
     this.App.resultCollectionSL = new Meteor.Collection(null);
     this.App.resultCollection2 = new Meteor.Collection(null);
     this.App.resultCollection3 = new Meteor.Collection(null);
+
     this.App.FindRepository = (function (uri) {
 
         var answer = {};
@@ -79,6 +119,8 @@ if (Meteor.isClient) {
         }
         return answer;
     });
+
+
 
     var Qmode = 0;
     var pa = -1;
@@ -103,6 +145,7 @@ if (Meteor.isClient) {
                 }).show();
             } else {
                 if (result.resultSet) {
+                    Session.set("LinkGeo", result.GeoHash);
                     if (qm > 0) {
                         pa = -1;
                         Session.set("NResult", result.resultCount);
@@ -140,6 +183,12 @@ if (Meteor.isClient) {
         });
         return "";
     });
+    Template.graph.helpers({
+        Config: function () {
+            return Configuration.find().fetch().length > 0;
+        }
+    });
+
     Template.stats.helpers({
         g1: function () {
             var str = {};
@@ -533,7 +582,7 @@ if (Meteor.isClient) {
                     //console.log(data);
                     // Set the dimensions of the canvas / graph
                     var margin = {top: 30, right: 20, bottom: 30, left: 50},
-                    width = $('#DocumentsChart').width() - margin.left - margin.right,
+                            width = $('#DocumentsChart').width() - margin.left - margin.right,
                             height = 300 - margin.top - margin.bottom;
 // Parse the date / time
                     var parseDate = d3.time.format("%Y").parse;
@@ -1101,6 +1150,439 @@ if (Meteor.isClient) {
             };
         }
     });
+
+    /*Template.selectendpoint.helpers({
+     endpointsAvailable: function () {
+     return Endpoints.find({status: 'A'}).fetch();
+     }
+     });*/
+    /*Template.selectendpoint.onRendered({
+     endpointsAvailable: function () {
+     console.log (Endpoints);
+     return Endpoints.find({status: 'A'}).fetch();
+     }
+     });*/
+    /* Template.confpanel.onCreated(function(){
+
+     this.subscribe("endpoints");
+     });*/
+
+
+    /*    Template.confpanel.helpers({
+     PropertiesAvailable: function () {
+     var valores = [];
+     var graph = Session.get ('Graph');
+     console.log ("Graficar");
+     if (graph !== undefined){
+     valores = Properties.find({'endpoint':graph}).fetch();
+     } else {
+     //valores = Properties.find().fetch();
+     valores = [ {name : ""} ]
+     }
+     console.log (valores.length);
+
+     return valores;
+
+     } ,  EntitiesAvailable: function () {
+     var valores = [];
+     var graph = Session.get ('Graph');
+     console.log ("Graficar");
+     if (graph !== undefined){
+     valores = Entities.find({'endpoint':graph}).fetch()[0].entities;
+     } else {
+     //valores = Properties.find().fetch();
+     valores = [ {name : ""} ]
+     }
+     console.log (valores.length);
+
+     return valores;
+
+     }
+
+     });*/
+
+    Template.confpanel.helpers({
+        EntitiesLoad: function () {
+            var endp = Session.get('Graph');
+            var confent = Configuration.find({"Endpoint": endp}).fetch()[0];
+            //if (endp !== undefined  && endp != null){
+            if (!_.isUndefined(endp) && endp != "---" && (!_.isUndefined(confent))) {
+                console.log(endp);
+             //   console.log(Configuration.find({"Endpoint": endp}).fetch()[0].ConfEntity);
+            // var confent = Configuration.find({"Endpoint": endp}).fetch()[0].ConfEntity;
+                   if (!_.isUndefined(confent.ConfEntity )) {
+                     return confent.ConfEntity ;
+                   } else {
+                     return [];
+                   }
+
+
+            } else
+            {
+                return [];
+            }
+        },
+        settingsent: function () {
+            return {
+                rowsPerPage: 5,
+                showFilter: false,
+                fields:
+                        [
+                            {
+                                key: 'name',
+                                label: lang.lang("Obj_Name")
+
+                            }, {
+                                key: 'URI',
+                                label: "URI"
+                            }, {
+                                key: 'descriptiveprop',
+                                label: lang.lang("Prop_des")
+                            }, {
+                                key: 'URI',
+                                label: lang.lang("delete"),
+                                fn: function (value, object) {
+                                    return new Spacebars.SafeString("<td> <button type='button' class='btn btn-default' id='deleteConfigbutton' onClick='deleteConfig(this)' URIOPT=" + value + "  ><span class='glyphicon glyphicon-remove'></span></button></td>");
+                                }
+                            }
+                            , {
+                                key: 'URI',
+                                label: lang.lang("edit"),
+                                fn: function (value, object) {
+                                    return new Spacebars.SafeString("<td> <button type='button' class='btn btn-default' id='deleteConfigbutton' onClick='editEntity(this)' URIOPT=" + value + "  ><span class='glyphicon glyphicon-edit'></span></button></td>");
+                                }
+
+                            }
+
+
+
+                        ]
+            };
+        },
+        StatLoad: function () {
+            var endp = Session.get('Graph');
+            var config = Configuration.find({"Endpoint": endp}).fetch()[0];
+
+            if ( (!_.isUndefined(endp)) && endp != null && endp != "---" && (!_.isUndefined(config)) ) {
+                console.log(endp);
+
+                if  (!_.isUndefined(config.ConfStat)) {
+
+                return config.ConfStat;
+            } else {
+                return [];
+            }
+            } else
+            {
+                return [];
+            }
+
+        }, settingstat: function () {
+            return {
+                rowsPerPage: 5,
+                showFilter: false,
+                fields:
+                        [
+                            {
+                                key: 'name',
+                                label: lang.lang("Obj_Name")
+
+                            }, {
+                                key: 'URI',
+                                label: "URI"
+                            }, {
+                                key: 'Relprop',
+                                label: lang.lang("rel")
+                            }, {
+                                key: 'typegraph',
+                                label: lang.lang("graph_type")
+                            }
+                            , {
+                                key: 'URI',
+                                label: lang.lang("delete"),
+                                fn: function (value, object) {
+                                    return new Spacebars.SafeString("<td> <button type='button' class='btn btn-default' id='deleteConfigStatbutton' onClick='deleteConfigStat(this)' URIOPT=" + value + "  ><span class='glyphicon glyphicon-remove'></span></button></td>");
+                                }
+                            }
+                            , {
+                                key: 'URI',
+                                label: lang.lang("edit"),
+                                fn: function (value, object) {
+                                    return new Spacebars.SafeString("<td> <button type='button' class='btn btn-default' id='deleteConfigStatbutton' onClick='editStat(this)' URIOPT=" + value + "  ><span class='glyphicon glyphicon-edit'></span></button></td>");
+                                }
+
+                            }
+
+
+
+                        ]
+            };
+        }
+
+    });
+
+    Template.selectendpoint.helpers({
+        endpointsAvailable: function () {
+            // console.log ("Mostrando Endpoi");
+            // console.log (Endpoints);
+            return Endpoints.find({status: 'A'}).fetch();
+        }
+    });
+
+
+    Template.completproperty.helpers({
+        PropertiesAvailable: function () {
+            var valores = [];
+            var graph = Session.get('Graph');
+            // console.log("Graficar");
+            if (graph !== undefined) {
+                valores = Properties.find({'endpoint': graph}).fetch();
+            } else {
+                //valores = Properties.find().fetch();
+                valores = [];
+            }
+            console.log(valores.length);
+
+            return valores;
+
+        }
+    });
+
+
+    Template.completentity.helpers({
+        EntitiesAvailable: function () {
+            var valores = [];
+            var graph = Session.get('Graph');
+            //  console.log("Graficar");
+            //  console.log (graph);
+            if (!(_.isUndefined(graph) || graph == null) && graph != "---") {
+                //if (graph !== undefined &&  graph !== null ){
+                valores = Entities.find({'endpoint': graph}).fetch()[0].entities;
+            } else {
+                //valores = Properties.find().fetch();
+                //valores = [ {name : ""} ];
+                console.log("No grafica Available");
+            }
+            //console.log (valores.length);
+
+            return valores;
+
+        }
+    });
+
+    Template.completpropertysingle.helpers({
+        PropertiesAvailableSingle: function ( ) {
+            //  console.log ("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+            // console.log (param);
+
+            var valores = [];
+            var graph = Session.get('Graph');
+            // console.log("Graficar");
+            if (graph !== undefined) {
+                valores = Properties.find({'endpoint': graph}).fetch();
+            } else {
+                //valores = Properties.find().fetch();
+                valores = [{name: ""}];
+            }
+            console.log(valores.length);
+
+
+            /*    _.each ( valores , function (e , idx ) {
+             if (idx == 2 &&  "FontProp" == param ){
+             e.isSelected = "selected";
+             } else {
+             e.isSelected = "false";
+             }
+             });
+
+             console.log (valores);*/
+
+            return valores;
+
+        }
+    });
+
+
+    Template.indexproperty.helpers({
+        PropertiesAvailable: function () {
+            var valores = [];
+            var graph = Session.get('Graph');
+            //  console.log("Graficar");
+            if (graph !== undefined) {
+                valores = Properties.find({'endpoint': graph}).fetch();
+            } else {
+                //valores = Properties.find().fetch();
+                valores = [{name: ""}];
+            }
+            console.log(valores.length);
+
+            return valores;
+
+        }
+    });
+
+
+    Template.graphselectionprop.helpers({
+        EntitiesAvailable: function (type) {
+
+
+            var valores = [];
+            var graph = Session.get('Graph');
+             var conf =  Configuration.find({'Endpoint': graph}, {reactive: false}).fetch()[0];
+            // var act = Session.get ('updatetables');
+            // console.log("Graficar lista 1");
+            // console.log(type);
+            // console.log (graph);
+            if (graph !== undefined && graph !== null && graph != "---"  ) {
+                valores = Entities.find({'endpoint': graph}).fetch()[0].entities;
+                var valorselect = [];
+                if (! _.isUndefined(conf)) {
+
+                if (type == "distriList") {
+
+                    valorselect = Configuration.find({'Endpoint': graph}, {reactive: false}).fetch()[0].VisGraph;
+
+                } else {
+
+                    valorselect = Configuration.find({'Endpoint': graph}, {reactive: false}).fetch()[0].EntSearch;
+                    var selected = Configuration.find({'Endpoint': graph}, {reactive: false}).fetch()[0].Source;
+                    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+                    console.log(selected);
+                    $('#FontProp').val(selected);
+                }
+                } else {
+                    valorselect = [];
+                }
+
+                console.log("Valores registrados");
+                console.log(valorselect);
+                //  console.log (_.pluck(valores, 'name'));
+                // if (   typeof valoreselect === 'undefined'  )
+                //  {
+                var filtrado = _.filter(valores, function (element) {
+                    if (element != null ) {
+                    return  !(_.contains(valorselect, element.fullName));
+                    } else {
+                       return false;
+                    }
+                });
+                valores = filtrado;
+                console.log("Filtrado");
+                console.log(filtrado);
+                //console.log (_.pluck(valores, 'name'));
+                //console.log ("Calcular");
+                //var valorescal = _.difference( _.pluck(valores, 'name') , valorselect );
+                //console.log (valorescal);
+                // }
+
+
+            } else {
+                //valores = Properties.find().fetch();
+
+                //valores = [{name: "", fullName: ""}];
+                valores = [];
+                Session.set('refresh', true);
+            }
+            console.log(valores.length);
+            //Session.set ('updatetables', false);
+
+            return valores;
+
+        },
+
+        EntitiesSelected: function (type) {
+            var valores = [];
+
+
+            var graph = Session.get('Graph');
+            var conf =  Configuration.find({'Endpoint': graph}, {reactive: false}).fetch()[0];
+            //var act = Session.get ('updatetables');
+            //console.log("Graficar lista2");
+            //console.log(type);
+
+            if (graph !== undefined && graph !== null && graph != "---"  ){
+                valores = Entities.find({'endpoint': graph}).fetch()[0].entities;
+                var valorselect = [];
+                if (! _.isUndefined(conf)) {
+
+                if (type == "distriList") {
+
+                    valorselect = Configuration.find({'Endpoint': graph}, {reactive: false}).fetch()[0].VisGraph;
+
+                } else {
+
+                    valorselect = Configuration.find({'Endpoint': graph}, {reactive: false}).fetch()[0].EntSearch;
+                }
+                }
+
+                console.log("Valores registrados");
+                console.log(valorselect);
+                //  console.log (_.pluck(valores, 'name'));
+                // if (  typeof valoreselect == 'undefined' )
+                //  {
+                var filtrado = _.filter(valores, function (element) {
+                    if (element != null ) {
+                    return  _.contains(valorselect, element.fullName);
+                    } else {
+                        return false;
+                    }
+                });
+                console.log("Filtrado");
+                console.log(filtrado);
+                valores = filtrado;
+                //}
+
+
+            } else {
+                //valores = Properties.find().fetch();
+               // valores = [{name: "", fullName: ""}];
+                // valores = [];
+                return valores;
+            }
+            console.log(valores.length);
+            //Session.set ('updatetables', false);
+            return valores;
+
+
+        }
+    });
+
+
+
+
+    /*
+     Template.MultipleSelectAuto.helpers({
+     'myMenuItems': function selectedItems() {
+     var endp = Endpoints.find({status: 'A'}).fetch();
+     var newlist = _.each( endp , function ( endpointp , idx) {
+     return { value : idx , caption : endp.name , selected : "false" }
+     });
+     console.log (newList);
+
+
+     return newlist ;
+     }
+     ,
+     'mySelectedList': function selectedList() {
+     /*let retVal = arr.filter(function aFilter(elem) {return elem.selected;})
+     .map(function aMap(elem) {return elem.value;});
+     return retVal ? retVal : [];*/ /*
+      return   Endpoints.find({status: 'A'}).fetch();
+      },
+
+      'myConfigOptions': function configOptions() {
+      return {
+      'nonSelectedText': 'Check option',
+      'buttonClass': 'btn btn-primary',
+      'onChange': function onChange(option, checked) {
+      let index = $(option).val();
+      console.log('Changed option ' + index + '. checked: ' + checked);
+      arr.indexOf(index).selected = checked;
+      }
+      };
+      }
+      });
+      */
     // JS
     Template.favsearch.helpers({
         histsearch: function () {
@@ -1228,6 +1710,7 @@ if (Meteor.isClient) {
             }
         }
     });
+
 
     Template.adminpanel.helpers({
         usersAvailable: function () {
@@ -1519,8 +2002,8 @@ if (Meteor.isClient) {
                             graph.endpointProperties[j - 1] = graph.endpointProperties[j];
                             graph.endpointProperties[j] = aux;
                         }
-                        console.log("Prop");
-                        console.log(graph.endpointProperties[j]);
+                        // console.log("Prop");
+                        //console.log(graph.endpointProperties[j]);
 
                     }
                     console.log("HASH ");
@@ -1543,12 +2026,17 @@ if (Meteor.isClient) {
                             graph.endpointEntities[j - 1] = graph.endpointEntities[j];
                             graph.endpointEntities[j] = aux;
                         }
-                        //  console.log ("Ent");
-                        // console.log (graph.endpointEntities[j]);
+                        console.log("Ent");
+                        console.log(graph.endpointEntities[j]);
 
                     }
 
                     Session.set(graph.endpoint + '|' + graph.graphURI, {entities: graph.endpointEntities, properties: graph.endpointProperties});
+                    Meteor.call('SaveEntities', graph.endpoint, graph.graphURI, graph.endpointEntities, function (error, result) {
+                        console.log(result);
+
+                    });
+
                     response.push(graph);
                     //console.log(graph);
                 });
@@ -1679,7 +2167,7 @@ if (Meteor.isClient) {
 
     Template.nlsearch.helpers({
         Loading: function () {
-            return Session.get('AuxCargS')>0;
+            return Session.get('AuxCargS') > 0;
         },
         endpointsAvailable: function () {
             return Endpoints.find({status: 'A'}).fetch();
@@ -1947,6 +2435,19 @@ if (Meteor.isClient) {
                 return "glyphicon glyphicon-chevron-down";
             }
 
+        }, GeoLink: function () {
+            var des = window.location.protocol + '//' + window.location.host + '/map/' + Session.get("LinkGeo");
+            return des;
+
+        }, DespGeo: function () {
+            var des = Session.get("DespGeo");
+            if (des) {
+
+                return "glyphicon glyphicon-chevron-up";
+            } else {
+                return "glyphicon glyphicon-chevron-down";
+            }
+
         }, DespFac: function () {
             var des = Session.get("DespFac");
             if (des) {
@@ -1959,34 +2460,29 @@ if (Meteor.isClient) {
         },
         suggestedQueries: function () {
 
-            var EntitySearch = get_radio_value("opciones");
+            var ConfigInfo = Configuration.find().fetch();
+
+            var t__ = "T";
+            var EntitySearch = $('input:radio[name=opciones]:checked').val();
+            if (EntitySearch != undefined) {
+                t__ = EntitySearch;
+            } else {
+                return [];
+            }
+
+            var lsMC = [];
+            for (var indtem = 0; indtem < ConfigInfo.length; indtem++) {
+                lsMC = lsMC.concat(ConfigInfo[indtem].ConfEntity);
+            }
+            var cl = lsMC.filter(function (a) {
+                return a.URI == EntitySearch;
+            });
+            cl = cl[0];
             var w = [];
             //    alert ("Adiios");
             var des = Session.get("DespSug");
-            //  if (des){
-            switch (EntitySearch) {
-                case 'autores':
-                    w = loadQueryFirstNode('http://xmlns.com/foaf/0.1/Person');
+            w = loadQueryFirstNode(cl.URI);
 
-                    //  Session.set('DespSug', true);
-                    break;
-                case 'documentos':
-                    w = loadQueryFirstNode('http://purl.org/ontology/bibo/Document');
-
-                    // Session.set('DespSug', true);
-                    break;
-                case 'colecciones':
-                    w = loadQueryFirstNode('http://purl.org/ontology/bibo/Collection');
-
-                    //  Session.set('DespSug', true);
-                    break;
-                default :
-                    //  w = Queries.find().fetch();
-                    //  $(".sugestion-panel").css ("min-height", "400px");
-                    //$("#sug").collapse('show');
-                    //  Session.set('DespSug', false);
-                    break;
-            }
             var aux = Session.get("auxAct");
             var TextSearch = $(".textToSearch").val();
             for (var q = 0; q < w.length; q++) {
@@ -2023,6 +2519,76 @@ if (Meteor.isClient) {
                 }
             });
             return pagcon;
+        }, resourcesavailable: function () {
+
+            return  Session.get('TypesAvailable');
+            /*  var hashEnt = {};
+             var ConfigEnt = [];
+             _.each(Configuration.find().fetch(), function (conf) {
+             console.log("Recursos disponibles");
+             console.log(conf.EntSearch);
+             _.each(conf.EntSearch, function (ent) {
+             var confe = _.find(conf.ConfEntity, function (ce) {
+             return ce.URI == ent
+             });
+             if (!_.isUndefined(confe))
+             {
+             if (!hashEnt.hasOwnProperty(ent)) {
+             hashEnt [ent] = {'Name': confe.URI, 'Imagen': confe.file, 'Description': confe.name};
+             if (Session.get('s2') == confe.URI) {
+             hashEnt[ent].Check = "'true'";
+             }
+             }
+             }
+
+             });
+             });
+             console.log("Hash");
+             console.log(hashEnt);
+
+             var arrayent = Object.keys(hashEnt).map(function (key) {
+             return  hashEnt [key];
+             });
+             console.log("Lista");
+             console.log(arrayent);
+             return arrayent;*/
+
+
+        }, numresourceavailable: function () {
+            var hashEnt = {};
+            var ConfigEnt = [];
+            _.each(Configuration.find().fetch(), function (conf) {
+                console.log("Recursos disponibles");
+                console.log(conf.EntSearch);
+                _.each(conf.EntSearch, function (ent) {
+                    var confe = _.find(conf.ConfEntity, function (ce) {
+                        return ce.URI == ent
+                    });
+                    if (!_.isUndefined(confe))
+                    {
+                        if (!hashEnt.hasOwnProperty(ent)) {
+                            hashEnt [ent] = {'Name': confe.URI, 'Imagen': confe.file, 'Description': confe.name};
+                            if (Session.get('s2') == confe.URI) {
+                                hashEnt[ent].Check = "'true'";
+                            }
+                        }
+                    }
+
+                });
+            });
+            console.log("Hash");
+            console.log(hashEnt);
+
+            var arrayent = Object.keys(hashEnt).map(function (key) {
+                return  hashEnt [key];
+            });
+            console.log("Lista");
+            console.log(arrayent);
+            Session.set('TypesAvailable', arrayent);
+            return arrayent.length > 4;
+
+        }, invnumresourceavailable: function () {
+
         }
     });
 
@@ -2104,9 +2670,20 @@ if (Meteor.isClient) {
         return querylist;
     }
     function dataSourceSearch(response) {
+
+
         var toShow = [];
         if (response) {
-            //var NumMode = Session.get('Qmode');
+            var ConfigInfo = Configuration.find().fetch();
+            var lsMC = [];
+            for (var indtem = 0; indtem < ConfigInfo.length; indtem++) {
+                lsMC = lsMC.concat(ConfigInfo[indtem].ConfEntity);
+            }
+
+            var lsIcon = {};
+            for (var k = 0; k < lsMC.length; k++) {
+                lsIcon['' + lsMC[k].URI] = lsMC[k].icon;
+            }
 
 
             console.log(response.content);
@@ -2317,7 +2894,7 @@ if (Meteor.isClient) {
 
                                 console.log("Agrupa");
                                 var separador = '';
-                                if (resp[k].PropertyLabel.value == "Subject") {
+                                if (resp[k].PropertyLabel.value == "subject") {
 
                                     separador = " , ";
                                 } else {
@@ -2369,7 +2946,7 @@ if (Meteor.isClient) {
 
                                 console.log("Agrupa");
                                 var separador = '';
-                                if (SearchVar_ == "Subject") {
+                                if (SearchVar_ == "subject") {
 
                                     separador = " , ";
                                 } else {
@@ -2393,6 +2970,8 @@ if (Meteor.isClient) {
             }
         }
 //toShow.sort(compare);
+        console.log("Resultado a graficar");
+        console.log(toShow);
 
         return toShow;
     }
@@ -2566,12 +3145,12 @@ if (Meteor.isClient) {
             "Sign_in": "Sign in",
             "Create_account": "Create account",
             "Forgot_password": "Forgot password",
-            "Change_password":"Change password",
-                    "New_password": "New password",
+            "Change_password": "Change password",
+            "New_password": "New password",
             "Set_password": "Set password",
             "Current_password": "Current password",
-            "New_password":"New password",
-                    "My_Profile": "My Profile",
+            "New_password": "New password",
+            "My_Profile": "My Profile",
             "Names": "Names",
             "Direction": "Direction",
             "Occupation": "Occupation",
@@ -2604,7 +3183,37 @@ if (Meteor.isClient) {
             "Date": "Date",
             "Filters": "Filters",
             "Search_action": "Search",
-            "it": "italien"
+            "it": "italien",
+            "Configuration_panel": "CONFIGURATION PANEL",
+            "export": "Export",
+            "import": "Import",
+            "graph_vis": "Graph Explorer",
+            "entity_search": "Entities Search",
+            "stats_conf": "Stats configuration",
+            "entity_conf": "Entity Configuration",
+            "entity_name": "Entity name",
+            "entity_uri": "Entity URI",
+            "pick_image": "Choose Image",
+            "upload_image": "Upload  Image",
+            "attr_desc": "Identification attribute",
+            "autocomplete": "Autocomplete",
+            "attr_index": "Indexed Attribute",
+            "apply_filter": "Apply Special Filter",
+            "choose_filter": "Choose  filter ",
+            "lang": "Language",
+            "choose_icon": "Pick a icon",
+            "stats_conf": "Stats Configuration",
+            "rel_analized": "Analized Relation",
+            "graph_type": "Kind of graphic",
+            "hist": "Histogram",
+            "pie": "Pie",
+            "import_export": "Import/Export Configuration",
+            "rel": "Relation",
+            "edit": "Edit",
+            "Prop_des": "Descriptive Property",
+            "Obj_Name": "Name",
+            "queries": "Queries",
+            "confpanel": "Configuration"
         };
 
         var idiomEsp = {
@@ -2744,12 +3353,12 @@ if (Meteor.isClient) {
             "Sign_in": "Registrarse",
             "Create_account": "Crear Cuenta",
             "Forgot_password": "Contraseña Olvidada",
-            "Change_password":"Cambiar Contraseña",
-                    "New_password": "Nueva Contraseña",
+            "Change_password": "Cambiar Contraseña",
+            "New_password": "Nueva Contraseña",
             "Set_password": "Colocar Contraseña",
             "Current_password": "Password Actual",
-            "New_password":"Nuevo password",
-                    "My_Profile": "Mi Perfil",
+            "New_password": "Nuevo password",
+            "My_Profile": "Mi Perfil",
             "Names": "Nombres",
             "Direction": "Dirección",
             "Occupation": "Cargo",
@@ -2782,7 +3391,37 @@ if (Meteor.isClient) {
             "Date": "Fecha",
             "Filters": "Filtros",
             "Search_action": "Búsqueda",
-            "it": "italian"
+            "it": "italian",
+            "Configuration_panel": "PANEL DE CONFIGURACIÓN",
+            "import": "Importar",
+            "export": "Exportar",
+            "graph_vis": "Visualizador Gráfico",
+            "entity_search": "Búsqueda de Entidades",
+            "stats_conf": "Configuración de Estadísticas",
+            "entity_conf": "Configurar Entidad",
+            "entity_name": "Nombre de la Entidad",
+            "entity_uri": "URI de la entidad",
+            "pick_image": "Seleccionar  Imagen",
+            "upload_image": "Subir  Imagen",
+            "attr_desc": "Atributo identificativo",
+            "autocomplete": "Autocompletado",
+            "attr_index": "Atributos Indexados",
+            "apply_filter": "Aplicar Filtro Especial ",
+            "choose_filter": "Selección de Filtro ",
+            "lang": "Lenguaje",
+            "choose_icon": "Seleccione un icono",
+            "stats_conf": "Configurar Estadísticas",
+            "rel_analized": "Relación Analizada",
+            "graph_type": "Tipo de Gráfico",
+            "hist": "Histograma",
+            "pie": "Pastel",
+            "import_export": "Importar/Exportar configuraciones",
+            "rel": "Relación",
+            "edit": "Editar",
+            "Prop_des": "Propiedad Descriptiva",
+            "Obj_Name": "Nombre",
+            "queries": "Consultas",
+            "confpanel": "Configuración"
         };
 
 
@@ -2901,6 +3540,11 @@ if (Meteor.isClient) {
         }
     }
 
+    function getConfig() {
+        var img = Configuration.find().fetch();
+        console.log("Configuraciones");
+        console.log(img);
+    }
 
 
 

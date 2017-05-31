@@ -39,6 +39,11 @@ steeve:jquery-qrcode
 mrt:jquery-ui
 robvgroenewoud:awesomplete
 percolate:synced-cron
-mrt:mongodb-aggregation
+#mrt:mongodb-aggregation
+monbro:mongodb-mapreduce-aggregation
 mikowals:batch-insert
 nimble:restivus
+mrt:bootstrap-select
+brucejo:bootstrap-multiselect
+ostrio:files
+pfafman:filesaver
