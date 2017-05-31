@@ -2226,6 +2226,9 @@ if (Meteor.isClient) {
                       else if(resp[k].EntityURI.value.includes('ebraryec')){
                         OneResult.Source= 'Ebrary EC';
                       }
+                      else if(resp[k].EntityURI.value.includes('elibro')){
+                        OneResult.Source= 'E-Libro';
+                      }
 
                       else {
                         OneResult.Source= 'Dspace UC';
