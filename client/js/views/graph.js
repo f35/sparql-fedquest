@@ -194,6 +194,8 @@ var d3tip = require('d3-tip')(d3);
 
         console.log ("Calcular exclusion");
         console.log (endpointactual);
+        var all1 = Entities.find({ endpoint: endpointactual }).fetch()[0];
+
             var all = Entities.find({ endpoint: endpointactual }).fetch()[0].entities;
             var alltext = _.pluck (all , "fullName");
             console.log (alltext);
@@ -1458,7 +1460,7 @@ var d3tip = require('d3-tip')(d3);
                                  $( this ).dialog( "close" );
                                 }
                                  }
-                               });*/
+                               });
 
                            Session.set('numresultgraph', num);
 

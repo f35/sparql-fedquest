@@ -35,10 +35,8 @@
 
 .search-area {
 
-    min-height: 60px;
-    border-style: solid ;
-    border-width: 1px;
-    background: url('/images/contact-bg.png') no-repeat  top ;
+    height: 60px;
+    background: #fafafa;
     margin-left: 20px;
     margin: 10px;
 
@@ -365,15 +363,4 @@ border-radius: 5px;
     left: 50%;
     top: 2px;
     cursor: pointer;
-}
-
-#expandgeo {
-    left: 25%;
-    top: 2px;
-    cursor: pointer;
-}
-
-
-#endpointselect {
-    margin-left: 2%;
 }

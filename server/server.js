@@ -694,21 +694,13 @@ var num_auto=0;
                 console.log('Error Sugg_ '+JSON.stringify(objQuery));
                 result=result2;
             }
-            //
-            try {
-              var r = result.resultSet.value;
-
-              var lsp = JSON.parse(r).results.bindings;
-              for (var k = 0; k < lsp.length; k++) {
+            var r = result.resultSet.value;
+            var lsp = JSON.parse(r).results.bindings;
+            for (var k = 0; k < lsp.length; k++) {
                 if (lsp[k].p != undefined && lsp[k].p != null && lsp[k].Score != undefined && lsp[k].Score != null ){
                     resp.push({d: lsp[k].p.value, s: lsp[k].Score.value});
-                }              }
-            } catch (e) {
-                console.log("error en doQueryCacheStats ");
-            } finally {
-
+                }
             }
-
             var respo = resp.sort(function (a, b) {
                 return b.s - a.s;
             });
@@ -742,8 +734,6 @@ var num_auto=0;
         return 0;
       }
     });
-
-
 
     //   process.env.MAIL_URL = 'smtp://postmaster@sandboxee5ed2bda25d49ec855b09c230fdbf1f.mailgun.org:c2489aa5122a827541a4a412eea7ee83@smtp.mailgun.org:587';
      //  process.env.MAIL_URL = 'smtp://postmaster@mg.fedquest.cedia.org.ec:6a3bb4be5642a51f37c6234b7626bd9e@smtp.mailgun.org:587';
@@ -2927,7 +2917,7 @@ Api.addRoute('sparql', {authRequired: false}, {
 
         //Update Prefixes schema on every server startup
         //Meteor.call('updatePrefixes');
-        SyncedCron.start();
+      //  SyncedCron.start();
 
     });
 }

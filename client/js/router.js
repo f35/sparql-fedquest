@@ -115,7 +115,7 @@ this.Router = Backbone.Router.extend({
         $('div.navbar .collapse li a#options').css('pointer-events', 'none');
         new StatsView().render();
     },
-    graph: function (v1, v2, v3) {
+    graph: function (v1, v2, v3,v4) {
 
         Tracker.autorun(function () {
             if (Session.get("Conf")) {
@@ -123,7 +123,7 @@ this.Router = Backbone.Router.extend({
                 $('div.navbar .collapse li a#options').hide();
                 $('div.navbar .collapse li a#options').css('pointer-events', 'none');
                 console.log('entra a grafos');
-                new GraphView(decodeURIComponent(v1), decodeURIComponent(v2), decodeURIComponent(v3)).render();
+                new GraphView(decodeURIComponent(v1), decodeURIComponent(v2), decodeURIComponent(v3), decodeURIComponent(v4)).render();
             }
         });
 

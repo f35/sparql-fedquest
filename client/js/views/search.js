@@ -420,6 +420,8 @@ this.SearchView = Backbone.View.extend({
 
 
             var lsMC = [];
+
+
             for (var indtem = 0; indtem < ConfigInfo.length; indtem++) {
                 lsMC = lsMC.concat(ConfigInfo[indtem].ConfEntity);
             }
@@ -607,12 +609,25 @@ this.SearchView = Backbone.View.extend({
                 });
             }
 
-            Query += ' . filter(str(?EntityURI)!=\'\') . }  order by DESC(?Score)  \n  ' + ResultLimit+' ';
+
+            if (SubQN == 0) {
+                            Query += ' ?EntityURI <none> ?Score . filter(str(?EntityURI)!=\'\') . }  order by DESC(?Score)  \n  ' + ResultLimit;
+            } else {
+                  Query += ' . filter(str(?EntityURI)!=\'\') }  order by DESC(?Score)  \n  ' + ResultLimit;
+            }
             var jsonRequest = {"sparql": Query, "validateQuery": false, "MainVar": "EntityURI", "ApplyFilter": AppFilt};
+            console.log(jsonRequest);
+
+
+            ///Query += ' . filter(str(?EntityURI)!=\'\') . }  order by DESC(?Score)  \n  ' + ResultLimit+' ';
+            //var jsonRequest = {"sparql": Query, "validateQuery": false, "MainVar": "EntityURI", "ApplyFilter": AppFilt};
             //console.log(jsonRequest);
-            Session.set('jsonRequest', jsonRequest);
-            App.SearchRun(0, 1);
+            //Session.set('jsonRequest', jsonRequest);
+            //App.SearchRun(0, 1);
             //Session.set('Qmode', 1);
+            Session.set('jsonRequest', jsonRequest);
+          App.SearchRun(0, 1);
+          
         });
 
 
